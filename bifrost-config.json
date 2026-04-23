@@ -1,0 +1,78 @@
+{
+  "$schema": "https://www.getbifrost.ai/schema",
+
+  "encryption_key": "env.BIFROST_ENCRYPTION_KEY",
+
+  "client": {
+    "allowed_origins": ["*"],
+    "initial_pool_size": 300,
+    "max_request_body_size_mb": 10,
+    "enforce_auth_on_inference": false,
+    "drop_excess_requests": false,
+    "enable_logging": true,
+    "disable_content_logging": false,
+    "log_retention_days": 90
+  },
+
+  "config_store": {
+    "enabled": true,
+    "type": "postgres",
+    "config": {
+      "host":     "env.BIFROST_PG_HOST",
+      "port":     "env.BIFROST_PG_PORT",
+      "user":     "env.BIFROST_PG_USER",
+      "password": "env.BIFROST_PG_PASSWORD",
+      "db_name":  "env.BIFROST_PG_DBNAME",
+      "ssl_mode": "env.BIFROST_PG_SSLMODE",
+      "max_idle_conns": 10,
+      "max_open_conns": 100
+    }
+  },
+
+  "logs_store": {
+    "enabled": true,
+    "type": "postgres",
+    "config": {
+      "host":     "env.BIFROST_PG_HOST",
+      "port":     "env.BIFROST_PG_PORT",
+      "user":     "env.BIFROST_PG_USER",
+      "password": "env.BIFROST_PG_PASSWORD",
+      "db_name":  "env.BIFROST_PG_DBNAME",
+      "ssl_mode": "env.BIFROST_PG_SSLMODE",
+      "max_idle_conns": 5,
+      "max_open_conns": 50
+    }
+  },
+
+  "providers": {
+    "bedrock": {
+      "keys": [
+        {
+          "name":   "bedrock-iam-role",
+          "value":  "",
+          "models": ["*"],
+          "weight": 1.0,
+          "bedrock_key_config": {
+            "region": "env.AWS_REGION"
+          }
+        }
+      ],
+      "network_config": {
+        "max_retries":    3,
+        "retry_codes":    [429, 500, 502, 503, 504],
+        "retry_delay_ms": 200,
+        "timeout_ms":     120000,
+        "concurrency":    100
+      }
+    }
+  },
+
+  "governance": {
+    "auth_config": {
+      "is_enabled":              true,
+      "admin_username":          "env.BIFROST_ADMIN_USERNAME",
+      "admin_password":          "env.BIFROST_ADMIN_PASSWORD",
+      "disable_auth_on_inference": true
+    }
+  }
+}

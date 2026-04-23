@@ -1,0 +1,80 @@
+version: "3.9"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Bifrost AI Gateway — IAM Role Edition
+#
+# AWS credentials are resolved automatically from the attached IAM role.
+# No AWS_ACCESS_KEY_ID or AWS_SECRET_ACCESS_KEY needed anywhere.
+#
+# On ECS / EC2:  attach an IAM Task Role / Instance Profile to this container
+# On EKS:        use IRSA (set AWS_ROLE_ARN + AWS_WEB_IDENTITY_TOKEN_FILE)
+# Local dev:     run `aws configure` or set AWS_PROFILE — the credential chain
+#                will be inherited by the container automatically
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── PostgreSQL 16 (UTF8 — required by Bifrost) ────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: bifrost-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${BIFROST_PG_USER}
+      POSTGRES_PASSWORD: ${BIFROST_PG_PASSWORD}
+      POSTGRES_DB:       ${BIFROST_PG_DBNAME}
+      # UTF8 is mandatory — Bifrost migrations fail on SQL_ASCII databases
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${BIFROST_PG_USER} -d ${BIFROST_PG_DBNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Bifrost AI Gateway ────────────────────────────────────────────────────
+  bifrost:
+    image: maximhq/bifrost:latest
+    container_name: bifrost-gateway
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      # This mounts config.json and fixes the "config file not found" error
+      - ./bifrost-config.json:/app/data/config.json:ro
+    environment:
+      # ── Bifrost ──
+      BIFROST_ENCRYPTION_KEY:  ${BIFROST_ENCRYPTION_KEY}
+      BIFROST_ADMIN_USERNAME:  ${BIFROST_ADMIN_USERNAME}
+      BIFROST_ADMIN_PASSWORD:  ${BIFROST_ADMIN_PASSWORD}
+
+      # ── Postgres ──
+      BIFROST_PG_HOST:     postgres    # service name — NOT localhost
+      BIFROST_PG_PORT:     ${BIFROST_PG_PORT}
+      BIFROST_PG_USER:     ${BIFROST_PG_USER}
+      BIFROST_PG_PASSWORD: ${BIFROST_PG_PASSWORD}
+      BIFROST_PG_DBNAME:   ${BIFROST_PG_DBNAME}
+      BIFROST_PG_SSLMODE:  ${BIFROST_PG_SSLMODE}
+
+      # ── AWS Region only — IAM role provides credentials automatically ──
+      AWS_REGION: ${AWS_REGION}
+
+      # ── EKS IRSA (uncomment if running on Kubernetes with IRSA) ──
+      # AWS_ROLE_ARN:                arn:aws:iam::123456789012:role/BifrostBedrockRole
+      # AWS_WEB_IDENTITY_TOKEN_FILE: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  postgres-data:
+    driver: local
