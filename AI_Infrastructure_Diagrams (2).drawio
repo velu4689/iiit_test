@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" version="21.0.0">
+
+  <diagram id="p1" name="NVIDIA AI Stack">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <mxCell id="title1" value="NVIDIA AI Stack — Corrected Mental Model" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#0D1B3E;align=center;" vertex="1" parent="1"><mxGeometry x="200" y="20" width="1000" height="36" as="geometry"/></mxCell>
+        <mxCell id="sub1" value="Each layer depends on the one below. They are NOT alternatives — they are a complete vertical stack." style="text;html=1;fontSize=12;fontColor=#64748B;align=center;" vertex="1" parent="1"><mxGeometry x="200" y="54" width="1000" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="app" value="&lt;b&gt;Your AI Application&lt;/b&gt;&lt;br&gt;RAG pipeline · fraud detection · semantic search · LLM agents" style="html=1;rounded=1;arcSize=4;fillColor=#1E293B;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;fontStyle=1;spacingTop=8;" vertex="1" parent="1"><mxGeometry x="100" y="90" width="1200" height="68" as="geometry"/></mxCell>
+
+        <mxCell id="a1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="app" target="nim"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="nim" value="&lt;b&gt;NVIDIA NIM — Inference Microservices (Serving Layer)&lt;/b&gt;&lt;br&gt;Pre-built Docker container per model · Auto-selects TensorRT-LLM / vLLM / SGLang · OpenAI-compatible REST API" style="html=1;rounded=1;arcSize=4;fillColor=#0D6E6E;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;spacingTop=6;" vertex="1" parent="1"><mxGeometry x="100" y="198" width="1200" height="68" as="geometry"/></mxCell>
+
+        <mxCell id="trtllm" value="&lt;b&gt;TensorRT-LLM&lt;/b&gt;&lt;br&gt;Compiled kernel engine" style="html=1;rounded=1;arcSize=8;fillColor=#0D6E6E;fontColor=#9FE1CB;strokeColor=#5DCAA5;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="120" y="278" width="240" height="50" as="geometry"/></mxCell>
+        <mxCell id="vllm" value="&lt;b&gt;vLLM&lt;/b&gt;&lt;br&gt;PagedAttention engine" style="html=1;rounded=1;arcSize=8;fillColor=#0D6E6E;fontColor=#9FE1CB;strokeColor=#5DCAA5;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="390" y="278" width="240" height="50" as="geometry"/></mxCell>
+        <mxCell id="sglang" value="&lt;b&gt;SGLang&lt;/b&gt;&lt;br&gt;RadixAttention / MoE" style="html=1;rounded=1;arcSize=8;fillColor=#0D6E6E;fontColor=#9FE1CB;strokeColor=#5DCAA5;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="660" y="278" width="240" height="50" as="geometry"/></mxCell>
+        <mxCell id="triton" value="&lt;b&gt;Triton Server&lt;/b&gt;&lt;br&gt;Multi-model batching" style="html=1;rounded=1;arcSize=8;fillColor=#0D6E6E;fontColor=#9FE1CB;strokeColor=#5DCAA5;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="930" y="278" width="240" height="50" as="geometry"/></mxCell>
+
+        <mxCell id="a2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="nim" target="runai"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="runai" value="&lt;b&gt;Run:AI — GPU Orchestration &amp; Scheduler (Orchestration Layer)&lt;/b&gt;&lt;br&gt;Kubernetes-native · Dynamic GPU allocation · Fractional slicing · Team quotas · 13% → 80%+ utilisation" style="html=1;rounded=1;arcSize=4;fillColor=#1B5B8A;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;spacingTop=6;" vertex="1" parent="1"><mxGeometry x="100" y="358" width="1200" height="68" as="geometry"/></mxCell>
+
+        <mxCell id="sched" value="Dynamic scheduling" style="rounded=1;arcSize=8;fillColor=#1B5B8A;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="120" y="438" width="240" height="40" as="geometry"/></mxCell>
+        <mxCell id="mig2" value="Fractional GPU / MIG" style="rounded=1;arcSize=8;fillColor=#1B5B8A;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="390" y="438" width="240" height="40" as="geometry"/></mxCell>
+        <mxCell id="quotas" value="Team quotas &amp; isolation" style="rounded=1;arcSize=8;fillColor=#1B5B8A;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="660" y="438" width="240" height="40" as="geometry"/></mxCell>
+        <mxCell id="util" value="Utilisation 13% → 80%+" style="rounded=1;arcSize=8;fillColor=#1B5B8A;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="930" y="438" width="240" height="40" as="geometry"/></mxCell>
+
+        <mxCell id="a3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="runai" target="k8s"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="k8s" value="&lt;b&gt;Kubernetes + NVIDIA GPU Operator (Platform Layer)&lt;/b&gt;&lt;br&gt;Container orchestration · Device plugin · GPU health monitoring" style="html=1;rounded=1;arcSize=4;fillColor=#64748B;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;spacingTop=6;" vertex="1" parent="1"><mxGeometry x="100" y="498" width="1200" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="a4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="k8s" target="cuda"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="cuda" value="&lt;b&gt;CUDA — GPU Instruction Language (Foundation Layer)&lt;/b&gt;&lt;br&gt;NVIDIA-only · No CPU fallback · cuDNN · cuBLAS · NCCL · Nsight" style="html=1;rounded=1;arcSize=4;fillColor=#854F0B;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;spacingTop=6;" vertex="1" parent="1"><mxGeometry x="100" y="578" width="1200" height="68" as="geometry"/></mxCell>
+
+        <mxCell id="cudnn" value="cuDNN&lt;br&gt;Deep learning ops" style="html=1;rounded=1;arcSize=8;fillColor=#854F0B;fontColor=#FAC775;strokeColor=#EF9F27;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="120" y="658" width="240" height="40" as="geometry"/></mxCell>
+        <mxCell id="cublas" value="cuBLAS&lt;br&gt;Matrix math" style="html=1;rounded=1;arcSize=8;fillColor=#854F0B;fontColor=#FAC775;strokeColor=#EF9F27;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="390" y="658" width="240" height="40" as="geometry"/></mxCell>
+        <mxCell id="nccl" value="NCCL&lt;br&gt;Multi-GPU comms" style="html=1;rounded=1;arcSize=8;fillColor=#854F0B;fontColor=#FAC775;strokeColor=#EF9F27;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="660" y="658" width="240" height="40" as="geometry"/></mxCell>
+        <mxCell id="nsight" value="Nsight&lt;br&gt;Profiling &amp; debug" style="html=1;rounded=1;arcSize=8;fillColor=#854F0B;fontColor=#FAC775;strokeColor=#EF9F27;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="930" y="658" width="240" height="40" as="geometry"/></mxCell>
+
+        <mxCell id="a5" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="cuda" target="hw"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="hw" value="&lt;b&gt;NVIDIA GPU Hardware (Silicon Layer)&lt;/b&gt;&lt;br&gt;H100 · H200 · A100 · RTX 6000 Ada — Thousands of CUDA cores per chip" style="html=1;rounded=1;arcSize=4;fillColor=#1E293B;fontColor=#E2E8F0;strokeColor=none;fontSize=13;align=center;spacingTop=6;" vertex="1" parent="1"><mxGeometry x="100" y="718" width="1200" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="analogy" value="CUDA = engine   ·   NIM = pre-tuned car   ·   Run:AI = fleet manager" style="text;html=1;fontSize=12;fontColor=#64748B;fontStyle=2;align=center;" vertex="1" parent="1"><mxGeometry x="200" y="800" width="1000" height="24" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="p2" name="GPU Sharing Methods">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <mxCell id="t2" value="GPU Sharing Methods: MIG · Time-Slicing · Tensor Parallelism" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#0D1B3E;align=center;" vertex="1" parent="1"><mxGeometry x="100" y="16" width="1400" height="32" as="geometry"/></mxCell>
+
+        <mxCell id="migHdr" value="&lt;b&gt;Method 1: MIG — Multi-Instance GPU (Hardware Isolation)&lt;/b&gt;&lt;br&gt;Supported: A100, H100, H200, RTX PRO 6000 Blackwell · NOT available on RTX 6000 Ada" style="html=1;rounded=1;arcSize=4;fillColor=#0D6E6E;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="66" width="1480" height="54" as="geometry"/></mxCell>
+
+        <mxCell id="h100box" value="" style="rounded=1;arcSize=4;fillColor=#E1F5EE;strokeColor=#0F6E56;strokeWidth=2;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="136" width="1480" height="200" as="geometry"/></mxCell>
+        <mxCell id="h100lbl" value="H100 80GB — Physical GPU" style="text;html=1;fontSize=12;fontStyle=1;fontColor=#0F6E56;" vertex="1" parent="1"><mxGeometry x="80" y="142" width="280" height="20" as="geometry"/></mxCell>
+
+        <mxCell id="m1" value="&lt;b&gt;1g.10GB × 7&lt;/b&gt;&lt;br&gt;Embeddings · Rerankers&lt;br&gt;Guardrail models&lt;br&gt;~114 tok/s · Overhead: ~3%" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#FFFFFF;strokeColor=#0C447C;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="170" width="180" height="150" as="geometry"/></mxCell>
+        <mxCell id="m2" value="&lt;b&gt;2g.20GB × 3&lt;/b&gt;&lt;br&gt;Llama 3.2 7B INT4&lt;br&gt;Mistral 7B INT4&lt;br&gt;~265 tok/s · Overhead: ~3%" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#FFFFFF;strokeColor=#0C447C;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="280" y="170" width="200" height="150" as="geometry"/></mxCell>
+        <mxCell id="m3" value="&lt;b&gt;3g.40GB × 2&lt;/b&gt;&lt;br&gt;Llama 3.3 70B INT4&lt;br&gt;Qwen3 32B BF16&lt;br&gt;~343 tok/s · Overhead: ~5%" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#FFFFFF;strokeColor=#0C447C;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="500" y="170" width="260" height="150" as="geometry"/></mxCell>
+        <mxCell id="m4" value="&lt;b&gt;4g.40GB × 1&lt;/b&gt;&lt;br&gt;Llama 3.3 70B INT4&lt;br&gt;Mixtral 8×7B&lt;br&gt;~457 tok/s" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#FFFFFF;strokeColor=#0C447C;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="780" y="170" width="240" height="150" as="geometry"/></mxCell>
+        <mxCell id="m5" value="&lt;b&gt;7g.80GB × 1 (Full GPU)&lt;/b&gt;&lt;br&gt;GPT-OSS 120B MXFP4&lt;br&gt;Llama 3.3 70B BF16&lt;br&gt;800 tok/s · No overhead" style="html=1;rounded=1;arcSize=6;fillColor=#0D1B3E;fontColor=#00C9A7;strokeColor=#0D6E6E;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="1040" y="170" width="280" height="150" as="geometry"/></mxCell>
+
+        <mxCell id="migBen" value="&lt;b&gt;MIG key benefit:&lt;/b&gt; Hardware-enforced isolation. A crash or memory error in one instance does NOT affect any other. Near-linear throughput scaling — dedicated memory controllers per slice." style="html=1;rounded=1;arcSize=4;fillColor=#D1FAE5;strokeColor=#10B981;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="350" width="1480" height="44" as="geometry"/></mxCell>
+
+        <mxCell id="tsHdr" value="&lt;b&gt;Method 2: Time-Slicing — Software Only (No Hardware Isolation)&lt;/b&gt;&lt;br&gt;Works on ALL NVIDIA GPUs including RTX 6000 Ada · 10–35% overhead · No VRAM isolation" style="html=1;rounded=1;arcSize=4;fillColor=#92400E;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="412" width="1480" height="54" as="geometry"/></mxCell>
+
+        <mxCell id="tsOk" value="✅ &lt;b&gt;Acceptable:&lt;/b&gt; Jupyter notebooks · Batch CDR pre-processing (overnight) · CI/CD model evaluation pipelines · Non-concurrent dev workloads" style="html=1;rounded=1;arcSize=4;fillColor=#D1FAE5;strokeColor=#10B981;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="480" width="720" height="60" as="geometry"/></mxCell>
+        <mxCell id="tsNo" value="❌ &lt;b&gt;WRONG CHOICE:&lt;/b&gt; Production LLM serving · PII or regulated workloads · Any concurrent production traffic — Use MIG instead. 25–35% overhead at 4+ concurrent workloads." style="html=1;rounded=1;arcSize=4;fillColor=#FEE2E2;strokeColor=#EF4444;fontSize=12;" vertex="1" parent="1"><mxGeometry x="820" y="480" width="720" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="tpHdr" value="&lt;b&gt;Method 3: Tensor Parallelism — Model Too Big for One GPU&lt;/b&gt;&lt;br&gt;Split model weight matrices across multiple GPUs · All compute simultaneously · Sync via NCCL all-reduce after each layer" style="html=1;rounded=1;arcSize=4;fillColor=#1E3A5F;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="562" width="1480" height="54" as="geometry"/></mxCell>
+
+        <mxCell id="g1" value="&lt;b&gt;GPU 1&lt;/b&gt;&lt;br&gt;Attn heads 1–8&lt;br&gt;Layer slice 1/4" style="html=1;rounded=1;arcSize=6;fillColor=#1E3A5F;fontColor=#00C9A7;strokeColor=#00C9A7;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="634" width="280" height="100" as="geometry"/></mxCell>
+        <mxCell id="g2" value="&lt;b&gt;GPU 2&lt;/b&gt;&lt;br&gt;Attn heads 9–16&lt;br&gt;Layer slice 2/4" style="html=1;rounded=1;arcSize=6;fillColor=#1E3A5F;fontColor=#00C9A7;strokeColor=#00C9A7;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="420" y="634" width="280" height="100" as="geometry"/></mxCell>
+        <mxCell id="g3" value="&lt;b&gt;GPU 3&lt;/b&gt;&lt;br&gt;FFN rows 1–N/2&lt;br&gt;Layer slice 3/4" style="html=1;rounded=1;arcSize=6;fillColor=#1E3A5F;fontColor=#00C9A7;strokeColor=#00C9A7;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="780" y="634" width="280" height="100" as="geometry"/></mxCell>
+        <mxCell id="g4" value="&lt;b&gt;GPU 4&lt;/b&gt;&lt;br&gt;FFN rows N/2–N&lt;br&gt;Layer slice 4/4" style="html=1;rounded=1;arcSize=6;fillColor=#1E3A5F;fontColor=#00C9A7;strokeColor=#00C9A7;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="1140" y="634" width="280" height="100" as="geometry"/></mxCell>
+
+        <mxCell id="nl1" value="NVLink&lt;br&gt;600 GB/s" style="html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#00C9A7;fontColor=#00C9A7;fontSize=10;endArrow=block;startArrow=block;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="g1" target="g2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="nl2" value="NVLink&lt;br&gt;600 GB/s" style="html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#00C9A7;fontColor=#00C9A7;fontSize=10;endArrow=block;startArrow=block;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="g2" target="g3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="nl3" value="NVLink&lt;br&gt;600 GB/s" style="html=1;edgeStyle=orthogonalEdgeStyle;strokeColor=#00C9A7;fontColor=#00C9A7;fontSize=10;endArrow=block;startArrow=block;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="g3" target="g4"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="tpBen" value="&lt;b&gt;NVLink (same server):&lt;/b&gt; 5–8% overhead · &lt;b&gt;PCIe (same server):&lt;/b&gt; 12–18% · &lt;b&gt;InfiniBand (cross-node):&lt;/b&gt; 15–25% latency overhead per forward pass" style="html=1;rounded=1;arcSize=4;fillColor=#DBEAFE;strokeColor=#1E3A8A;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="750" width="1480" height="44" as="geometry"/></mxCell>
+
+        <mxCell id="tpTools" value="&lt;b&gt;Implementation:&lt;/b&gt; vLLM: --tensor-parallel-size 4 · NIM: NIM_TENSOR_PARALLEL=4 · SGLang: --tp 4 · TensorRT-LLM: tensor_parallelism=4 · DeepSpeed MII: tensor_parallel=4" style="html=1;rounded=1;arcSize=4;fillColor=#F8FAFF;strokeColor=#CBD5E1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="60" y="808" width="1480" height="36" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="p3" name="SkyPilot Stack Position">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <mxCell id="t3" value="SkyPilot: Where It Fits in the Stack vs NIM, vLLM, Run:AI, Kueue" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#0D1B3E;align=center;" vertex="1" parent="1"><mxGeometry x="100" y="16" width="1200" height="32" as="geometry"/></mxCell>
+
+        <mxCell id="appL" value="&lt;b&gt;Your AI Application&lt;/b&gt;&lt;br&gt;RAG · fraud detection · LLM agents · semantic search" style="html=1;rounded=1;arcSize=4;fillColor=#1E293B;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="60" width="1280" height="56" as="geometry"/></mxCell>
+        <mxCell id="a_app" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="appL" target="skyL"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="skyL" value="&lt;b&gt;SkyPilot — Multi-Cloud / Multi-Cluster Router&lt;/b&gt;&lt;br&gt;Decides WHERE to run jobs · Cost arbitrage · Spot fallback · 20+ cloud + on-prem backends" style="html=1;rounded=1;arcSize=4;fillColor=#534AB7;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="136" width="1280" height="56" as="geometry"/></mxCell>
+
+        <mxCell id="aws" value="AWS · GCP · Azure · OCI" style="rounded=1;arcSize=6;fillColor=#534AB7;fontColor=#CECBF6;strokeColor=#7F77DD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="204" width="300" height="38" as="geometry"/></mxCell>
+        <mxCell id="neo" value="CoreWeave · Nebius · Lambda · RunPod" style="rounded=1;arcSize=6;fillColor=#534AB7;fontColor=#CECBF6;strokeColor=#7F77DD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="420" y="204" width="360" height="38" as="geometry"/></mxCell>
+        <mxCell id="onp" value="On-prem Kubernetes · Slurm · Bare metal" style="rounded=1;arcSize=6;fillColor=#534AB7;fontColor=#CECBF6;strokeColor=#7F77DD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="830" y="204" width="360" height="38" as="geometry"/></mxCell>
+
+        <mxCell id="a_sky" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="skyL" target="schedL"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="schedL" value="&lt;b&gt;Single-Cluster Orchestration Layer — Operates WITHIN One Kubernetes Cluster&lt;/b&gt;" style="html=1;rounded=1;arcSize=4;fillColor=#0D6E6E;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="262" width="1280" height="40" as="geometry"/></mxCell>
+
+        <mxCell id="runaiB" value="&lt;b&gt;Run:AI (NVIDIA — Commercial)&lt;/b&gt;&lt;br&gt;MIG-aware scheduling · Fractional GPU · Team quotas&lt;br&gt;Dynamic allocation · 13% → 80%+ GPU utilisation" style="html=1;rounded=1;arcSize=6;fillColor=#0D6E6E;fontColor=#9FE1CB;strokeColor=#1D9E75;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="314" width="580" height="80" as="geometry"/></mxCell>
+        <mxCell id="kueueB" value="&lt;b&gt;Kueue (Open Source — CNCF)&lt;/b&gt;&lt;br&gt;Fair-share queuing · Gang scheduling&lt;br&gt;Priority classes · MultiKueue multi-cluster dispatch" style="html=1;rounded=1;arcSize=6;fillColor=#0D6E6E;fontColor=#9FE1CB;strokeColor=#1D9E75;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="740" y="314" width="580" height="80" as="geometry"/></mxCell>
+
+        <mxCell id="a_sched" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="schedL" target="k8sL"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="k8sL" value="&lt;b&gt;Kubernetes + NVIDIA GPU Operator&lt;/b&gt;&lt;br&gt;Container platform · GPU device plugin · Cluster foundation" style="html=1;rounded=1;arcSize=4;fillColor=#64748B;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="414" width="1280" height="52" as="geometry"/></mxCell>
+
+        <mxCell id="a_k8s" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="k8sL" target="inferL"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="inferL" value="&lt;b&gt;Inference Serving Layer — Runs INSIDE a Pod or VM&lt;/b&gt;&lt;br&gt;Handles model weights · KV cache · Tokenization · Batching · REST API · No awareness of cloud above" style="html=1;rounded=1;arcSize=4;fillColor=#185FA5;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="486" width="1280" height="52" as="geometry"/></mxCell>
+
+        <mxCell id="nimB" value="&lt;b&gt;NVIDIA NIM&lt;/b&gt;&lt;br&gt;Pre-optimised container" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="550" width="250" height="60" as="geometry"/></mxCell>
+        <mxCell id="vllmB" value="&lt;b&gt;vLLM&lt;/b&gt;&lt;br&gt;PagedAttention engine" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="370" y="550" width="250" height="60" as="geometry"/></mxCell>
+        <mxCell id="sgB" value="&lt;b&gt;SGLang&lt;/b&gt;&lt;br&gt;RadixAttention / MoE" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="660" y="550" width="250" height="60" as="geometry"/></mxCell>
+        <mxCell id="trtB" value="&lt;b&gt;TensorRT-LLM&lt;/b&gt;&lt;br&gt;Compiled CUDA kernels" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#B5D4F4;strokeColor=#378ADD;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="950" y="550" width="270" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="a_inf" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="inferL" target="cudaL"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="cudaL" value="&lt;b&gt;CUDA — GPU Instruction Layer&lt;/b&gt;&lt;br&gt;NVIDIA-only · No CPU fallback · cuDNN · cuBLAS · NCCL" style="html=1;rounded=1;arcSize=4;fillColor=#854F0B;fontColor=#FFFFFF;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="630" width="1280" height="52" as="geometry"/></mxCell>
+
+        <mxCell id="a_cuda" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;" edge="1" parent="1" source="cudaL" target="hwL"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="hwL" value="&lt;b&gt;GPU Hardware&lt;/b&gt;   H100 · H200 · A100 · RTX 6000" style="html=1;rounded=1;arcSize=4;fillColor=#1E293B;fontColor=#E2E8F0;strokeColor=none;fontSize=13;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="702" width="1280" height="44" as="geometry"/></mxCell>
+
+        <mxCell id="n1" value="SkyPilot = cross-cluster router (WHERE)" style="rounded=1;arcSize=20;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#3C3489;fontSize=11;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="60" y="768" width="380" height="32" as="geometry"/></mxCell>
+        <mxCell id="n2" value="Run:AI / Kueue = within-cluster scheduler (HOW)" style="rounded=1;arcSize=20;fillColor=#E1F5EE;strokeColor=#0F6E56;fontColor=#085041;fontSize=11;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="480" y="768" width="440" height="32" as="geometry"/></mxCell>
+        <mxCell id="n3" value="NIM / vLLM = inference engine (WHAT runs inside the pod)" style="rounded=1;arcSize=20;fillColor=#E6F1FB;strokeColor=#0C447C;fontColor=#042C53;fontSize=11;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="960" y="768" width="380" height="32" as="geometry"/></mxCell>
+
+        <mxCell id="key" value="SkyPilot does NOT replace Run:AI, Kueue, NIM, or vLLM — it operates one full layer above them. All four are complementary." style="rounded=1;arcSize=4;fillColor=#FEF3C7;strokeColor=#F59E0B;fontSize=12;fontStyle=2;" vertex="1" parent="1"><mxGeometry x="60" y="816" width="1280" height="36" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="p4" name="Bedrock Economics">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="820" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <mxCell id="t4" value="How AWS Bedrock Prices a 120B Model Cheaply — 5 Compounding Levers" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#0D1B3E;align=center;" vertex="1" parent="1"><mxGeometry x="100" y="16" width="1200" height="32" as="geometry"/></mxCell>
+
+        <mxCell id="l1" value="&lt;b&gt;1. Massive Multi-Tenancy&lt;/b&gt; [Very High Impact]&lt;br&gt;One H100 80GB serves thousands of concurrent accounts simultaneously via continuous batching.&lt;br&gt;At full utilisation: H100 generates ~$12–18/hr revenue vs ~$3–4/hr cost to AWS." style="html=1;rounded=1;arcSize=6;fillColor=#065F46;fontColor=#D1FAE5;strokeColor=none;fontSize=12;align=left;spacingLeft=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1"><mxGeometry x="60" y="68" width="620" height="110" as="geometry"/></mxCell>
+
+        <mxCell id="l2" value="&lt;b&gt;2. MoE Architecture — 120B params, only 5B active&lt;/b&gt; [Very High Impact]&lt;br&gt;Mixture-of-Experts: only ~5B parameters activate per forward pass.&lt;br&gt;Compute cost resembles a 5–20B dense model, not a 120B one." style="html=1;rounded=1;arcSize=6;fillColor=#065F46;fontColor=#D1FAE5;strokeColor=none;fontSize=12;align=left;spacingLeft=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1"><mxGeometry x="720" y="68" width="620" height="110" as="geometry"/></mxCell>
+
+        <mxCell id="l3" value="&lt;b&gt;3. Cross-Region Inference Routing&lt;/b&gt; [High Impact]&lt;br&gt;Routes requests to whichever AWS region has spare GPU capacity.&lt;br&gt;Achieves near-100% GPU utilisation globally 24/7." style="html=1;rounded=1;arcSize=6;fillColor=#0C447C;fontColor=#B5D4F4;strokeColor=none;fontSize=12;align=left;spacingLeft=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1"><mxGeometry x="60" y="196" width="620" height="100" as="geometry"/></mxCell>
+
+        <mxCell id="l4" value="&lt;b&gt;4. AWS Hardware at Volume Discount&lt;/b&gt; [High Impact]&lt;br&gt;Custom Trainium/Inferentia chips at 40–60% lower cost per token.&lt;br&gt;Enterprises pay on-demand EC2; AWS pays fleet negotiated pricing." style="html=1;rounded=1;arcSize=6;fillColor=#0C447C;fontColor=#B5D4F4;strokeColor=none;fontSize=12;align=left;spacingLeft=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1"><mxGeometry x="720" y="196" width="620" height="100" as="geometry"/></mxCell>
+
+        <mxCell id="l5" value="&lt;b&gt;5. Batch Inference at 50% Discount&lt;/b&gt; [Medium Impact]&lt;br&gt;Non-real-time workloads fill GPU idle time at half on-demand price.&lt;br&gt;For CDR batch analytics or offline embedding generation." style="html=1;rounded=1;arcSize=6;fillColor=#633806;fontColor=#FAC775;strokeColor=none;fontSize=12;align=left;spacingLeft=12;spacingTop=6;spacingBottom=6;" vertex="1" parent="1"><mxGeometry x="390" y="314" width="620" height="100" as="geometry"/></mxCell>
+
+        <mxCell id="crossover" value="&lt;b&gt;Crossover point:&lt;/b&gt; Self-hosting an optimised MoE 120B model with quantisation + continuous batching achieves 5–10× lower cost per token than Bedrock on-demand — but only above ~$15,000–20,000/month in managed API spend." style="html=1;rounded=1;arcSize=4;fillColor=#FEF3C7;strokeColor=#F59E0B;fontSize=13;" vertex="1" parent="1"><mxGeometry x="60" y="434" width="1280" height="56" as="geometry"/></mxCell>
+
+        <mxCell id="opexHdr" value="OpEx Parity Strategy: 5 Steps to Match Bedrock Pricing When Self-Hosting" style="text;html=1;fontSize=16;fontStyle=1;fontColor=#0D1B3E;align=center;" vertex="1" parent="1"><mxGeometry x="100" y="510" width="1200" height="28" as="geometry"/></mxCell>
+
+        <mxCell id="s1" value="&lt;b&gt;Step 1&lt;/b&gt;&lt;br&gt;MoE model&lt;br&gt;10–24× compute reduction" style="html=1;rounded=1;arcSize=6;fillColor=#1D9E75;fontColor=#FFFFFF;strokeColor=none;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="550" width="216" height="80" as="geometry"/></mxCell>
+        <mxCell id="s2" value="&lt;b&gt;Step 2&lt;/b&gt;&lt;br&gt;Quantise to INT4&lt;br&gt;4× VRAM reduction" style="html=1;rounded=1;arcSize=6;fillColor=#0D6E6E;fontColor=#FFFFFF;strokeColor=none;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="306" y="550" width="216" height="80" as="geometry"/></mxCell>
+        <mxCell id="s3" value="&lt;b&gt;Step 3&lt;/b&gt;&lt;br&gt;Continuous batching&lt;br&gt;80–90% GPU util" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#FFFFFF;strokeColor=none;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="552" y="550" width="216" height="80" as="geometry"/></mxCell>
+        <mxCell id="s4" value="&lt;b&gt;Step 4&lt;/b&gt;&lt;br&gt;MIG for aux models&lt;br&gt;Zero extra hardware" style="html=1;rounded=1;arcSize=6;fillColor=#534AB7;fontColor=#FFFFFF;strokeColor=none;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="798" y="550" width="216" height="80" as="geometry"/></mxCell>
+        <mxCell id="s5" value="&lt;b&gt;Step 5&lt;/b&gt;&lt;br&gt;Run:AI governance&lt;br&gt;13% → 80%+ util" style="html=1;rounded=1;arcSize=6;fillColor=#854F0B;fontColor=#FFFFFF;strokeColor=none;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="1044" y="550" width="216" height="80" as="geometry"/></mxCell>
+
+        <mxCell id="sarr1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;endArrow=block;startArrow=none;" edge="1" parent="1" source="s1" target="s2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="sarr2" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;endArrow=block;startArrow=none;" edge="1" parent="1" source="s2" target="s3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="sarr3" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;endArrow=block;startArrow=none;" edge="1" parent="1" source="s3" target="s4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="sarr4" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#64748B;endArrow=block;startArrow=none;" edge="1" parent="1" source="s4" target="s5"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="result" value="Combined result: 5–10× lower cost per token vs Bedrock on-demand  ·  Crossover above ~$15,000–20,000/month managed API spend" style="rounded=1;arcSize=4;fillColor=#D1FAE5;strokeColor=#10B981;fontSize=12;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="60" y="650" width="1280" height="40" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="p5" name="RTX vs H100 Security">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="720" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+
+        <mxCell id="t5" value="RTX 6000 Ada vs H100 — Security Zones, vGPU &amp; Multi-Tenancy" style="text;html=1;fontSize=20;fontStyle=1;fontColor=#0D1B3E;align=center;" vertex="1" parent="1"><mxGeometry x="100" y="16" width="1200" height="32" as="geometry"/></mxCell>
+
+        <mxCell id="rtxBox" value="" style="rounded=1;arcSize=4;fillColor=#DBEAFE;strokeColor=#1E3A8A;strokeWidth=3;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="68" width="580" height="440" as="geometry"/></mxCell>
+        <mxCell id="rtxLbl" value="RTX 6000 Ada (48GB)&lt;br&gt;vGPU Software — Up to 16 Security Zones" style="text;html=1;fontSize=14;fontStyle=1;fontColor=#1E3A8A;align=center;" vertex="1" parent="1"><mxGeometry x="80" y="76" width="540" height="36" as="geometry"/></mxCell>
+
+        <mxCell id="v1" value="VM 1&lt;br&gt;PII Finance" style="html=1;rounded=1;arcSize=6;fillColor=#1E3A8A;fontColor=#DBEAFE;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="82" y="124" width="120" height="60" as="geometry"/></mxCell>
+        <mxCell id="v2" value="VM 2&lt;br&gt;Non-PII" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#DBEAFE;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="218" y="124" width="120" height="60" as="geometry"/></mxCell>
+        <mxCell id="v3" value="VM 3&lt;br&gt;Analytics" style="html=1;rounded=1;arcSize=6;fillColor=#185FA5;fontColor=#DBEAFE;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="354" y="124" width="120" height="60" as="geometry"/></mxCell>
+        <mxCell id="v4" value="VM 4&lt;br&gt;Dev" style="html=1;rounded=1;arcSize=6;fillColor=#378ADD;fontColor=#DBEAFE;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="490" y="124" width="120" height="60" as="geometry"/></mxCell>
+        <mxCell id="v5" value="VM 5" style="rounded=1;arcSize=6;fillColor=#378ADD;fontColor=#DBEAFE;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="82" y="200" width="120" height="52" as="geometry"/></mxCell>
+        <mxCell id="v6" value="VM 6" style="rounded=1;arcSize=6;fillColor=#378ADD;fontColor=#DBEAFE;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="218" y="200" width="120" height="52" as="geometry"/></mxCell>
+        <mxCell id="v7" value="VM 7" style="rounded=1;arcSize=6;fillColor=#85B7EB;fontColor=#042C53;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="354" y="200" width="120" height="52" as="geometry"/></mxCell>
+        <mxCell id="v8" value="VM 8" style="rounded=1;arcSize=6;fillColor=#85B7EB;fontColor=#042C53;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="490" y="200" width="120" height="52" as="geometry"/></mxCell>
+        <mxCell id="vm9to16" value="VM 9–16 (additional vGPU slots)" style="rounded=1;arcSize=6;fillColor=#B5D4F4;fontColor=#042C53;strokeColor=none;fontSize=11;align=center;" vertex="1" parent="1"><mxGeometry x="82" y="268" width="528" height="52" as="geometry"/></mxCell>
+
+        <mxCell id="rtxNote" value="✅ Up to 16 security zones on ONE physical GPU&lt;br&gt;PII &amp; non-PII workloads isolated on same card via VM-level separation" style="html=1;rounded=1;arcSize=4;fillColor=#EBF8FF;strokeColor=#1E3A8A;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="82" y="340" width="528" height="60" as="geometry"/></mxCell>
+        <mxCell id="rtxPrice" value="~$6,800 list price · vGPU software licence required" style="text;html=1;fontSize=11;fontColor=#64748B;align=center;" vertex="1" parent="1"><mxGeometry x="82" y="418" width="528" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="h100Box2" value="" style="rounded=1;arcSize=4;fillColor=#D1FAE5;strokeColor=#065F46;strokeWidth=3;" vertex="1" parent="1"><mxGeometry x="760" y="68" width="580" height="440" as="geometry"/></mxCell>
+        <mxCell id="h100Lbl2" value="H100 SXM5 (80GB)&lt;br&gt;1 Security Zone per GPU · MIG for workload isolation" style="text;html=1;fontSize=14;fontStyle=1;fontColor=#065F46;align=center;" vertex="1" parent="1"><mxGeometry x="780" y="76" width="540" height="36" as="geometry"/></mxCell>
+
+        <mxCell id="zone1" value="&lt;b&gt;Security Zone 1 (Entire GPU)&lt;/b&gt;&lt;br&gt;All workloads on this GPU share the same trust boundary" style="html=1;rounded=1;arcSize=4;fillColor=#065F46;fontColor=#9FE1CB;strokeColor=none;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="782" y="124" width="536" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="ms1" value="MIG 1g.10GB&lt;br&gt;Embedding model" style="html=1;rounded=1;arcSize=6;fillColor=#1D9E75;fontColor=#FFFFFF;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="790" y="200" width="152" height="70" as="geometry"/></mxCell>
+        <mxCell id="ms2" value="MIG 2g.20GB&lt;br&gt;7B inference" style="html=1;rounded=1;arcSize=6;fillColor=#1D9E75;fontColor=#FFFFFF;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="960" y="200" width="152" height="70" as="geometry"/></mxCell>
+        <mxCell id="ms3" value="MIG 3g.40GB&lt;br&gt;70B INT4 model" style="html=1;rounded=1;arcSize=6;fillColor=#0F6E56;fontColor=#FFFFFF;strokeColor=none;fontSize=10;align=center;" vertex="1" parent="1"><mxGeometry x="790" y="286" width="322" height="70" as="geometry"/></mxCell>
+
+        <mxCell id="h100Note" value="⚠️ Only 1 security zone per GPU. Finance workloads need a dedicated GPU.&lt;br&gt;However: MIG slices within that zone are hardware-isolated from each other." style="html=1;rounded=1;arcSize=4;fillColor=#FEF3C7;strokeColor=#F59E0B;fontSize=12;align=center;" vertex="1" parent="1"><mxGeometry x="782" y="374" width="536" height="60" as="geometry"/></mxCell>
+        <mxCell id="h100Price" value="~$30,000–40,000 list price · Data centre rated · NVLink · AES-256 confidential computing" style="text;html=1;fontSize=11;fontColor=#64748B;align=center;" vertex="1" parent="1"><mxGeometry x="782" y="444" width="536" height="24" as="geometry"/></mxCell>
+
+        <mxCell id="piiConc" value="&lt;b&gt;PII vs Non-PII decision:&lt;/b&gt; H100 = separate GPUs for separate security zones (higher cost). RTX 6000 Ada = up to 16 VMs on one GPU via vGPU software (lower hardware cost). RTX PRO 6000 Blackwell = best of both: MIG + vGPU combined." style="html=1;rounded=1;arcSize=4;fillColor=#EDE9FE;strokeColor=#8B5CF6;fontSize=12;" vertex="1" parent="1"><mxGeometry x="60" y="528" width="1280" height="52" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+</mxfile>
