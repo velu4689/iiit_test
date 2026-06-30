@@ -1,0 +1,150 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="arch" name="1. High-Level Architecture">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1150" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="gw_group" value="Google Workspace" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="420" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="mailbox" value="Source Mailbox\n(owner consents once, refresh token issued)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="70" y="90" width="360" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="chatspace" value="Google Chat Space\n(Service Account invited as member)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="70" y="180" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="drive" value="Drive Files\n(shared with Service Account)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="260" y="180" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pubsub" value="Pub/Sub Topic\n(optional push via Gmail watch())" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="260" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="batch_group" value="Batch / ETL Track (non-human, scheduled)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="420" height="320" as="geometry" />
+        </mxCell>
+        <mxCell id="secretstore" value="Secrets Backend\n(Vault / Secrets Manager)\nrefresh token + client id/secret" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="70" y="430" width="360" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="airflow" value="Airflow DAG\n(PythonOperator: refresh token -> Gmail API\nusers.messages.list / history.list, q=label/filter)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="520" width="360" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="landing" value="Landing Zone\n(S3 / GCS / ADLS raw)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="70" y="630" width="360" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="spark" value="Spark Job\n(parse, classify: call summary / change request,\nwrite structured table)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="560" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="structstore" value="Structured Store / Lakehouse Table\n(parsed mail: sender, subject, body, type, ts)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="540" y="670" width="320" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="sa" value="Service Account\n(own JSON key, Chat + Drive scopes)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="940" y="40" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="mcp" value="Self-hosted Google Workspace MCP Server\n(taylorwilsdon/google_workspace_mcp)\nChat + Drive live tools, Gmail SEND only (no bulk read)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="180" width="320" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="gateway" value="AI Gateway\n(TrueFoundry MCP Gateway / LiteLLM MCP Gateway)\nRBAC, auth header injection, usage &amp; cost tracking, audit log" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="940" y="340" width="320" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="agent" value="AI Agent / LLM Application" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="940" y="500" width="320" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note1" value="Two decoupled tracks:\n1) Batch/ETL pulls Gmail on a schedule using a refresh token (no human, no live agent calls) and lands structured data.\n2) Live MCP/Gateway path handles Chat + Drive (and Gmail SEND) at agent runtime.\nAgents query the structured store for mail content -- never the live mailbox -- avoiding shared rate limits and narrowing blast radius." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="940" y="700" width="320" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="mailbox" target="secretstore"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="mailbox" target="pubsub"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="secretstore" target="airflow"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="pubsub" target="airflow"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="airflow" target="landing"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="landing" target="spark"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="spark" target="structstore"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.3;entryX=0;entryY=0.7;" edge="1" parent="1" source="structstore" target="gateway"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="chatspace" target="sa"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="drive" target="sa"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="sa" target="mcp"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="mcp" target="gateway"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="gateway" target="agent"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+
+  <diagram id="flow" name="2. Step-wise Integration Flow">
+    <mxGraphModel dx="1400" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="s1" value="1. Create GCP project + OAuth client (Desktop/Web type)\nwith access_type=offline, prompt=consent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="380" y="40" width="360" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s2" value="2. Mailbox owner performs ONE-TIME OAuth consent\n(self-service; set consent screen to Internal to avoid 7-day refresh token expiry)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="380" y="140" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s3" value="3. Capture refresh token; store in secrets backend\n(Vault / AWS Secrets Manager / GCP Secret Manager) -- never plaintext Airflow Variables" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="380" y="250" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s4" value="4. Mailbox owner sets a label/filter scoping which mail\nthe job can ever query (e.g. label:call-summary OR label:change-request)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="380" y="360" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s5" value="5. Build Airflow DAG: PythonOperator refreshes access token,\ncalls Gmail API users.messages.list with q=label filter + watermark" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="380" y="470" width="360" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s5b" value="5b. OPTIONAL: call users.watch() to push changes to Pub/Sub\nfor near-real-time trigger instead of polling (re-arm every 7 days)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="470" width="320" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s6" value="6. DAG writes raw matched messages to landing zone\n(S3 / GCS / ADLS), partitioned by ingest date" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="380" y="590" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s7" value="7. Spark job parses + classifies messages\n(call summary vs change request) and writes to a structured lakehouse table" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="380" y="700" width="360" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s8" value="8. Register the structured table (not the mailbox)\nas the data source agents/MCP tools query for mail content" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="380" y="820" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s9" value="9. Separately: register the Google Workspace MCP server\n(Chat + Drive + Gmail-send) in the AI Gateway for live agent actions" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="380" y="930" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s10" value="10. Apply RBAC in the Gateway: which teams/agents can read\nthe structured mail table vs. send mail / post chat / write Drive live" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1040" width="360" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s11" value="11. Track usage: Airflow job runs are logged/monitored independently;\nGateway logs every live MCP call with team/user/tool metadata for cost &amp; audit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1150" width="360" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s1" target="s2"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s2" target="s3"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s3" target="s4"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s4" target="s5"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f5" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="s4" target="s5b"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f6" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s5" target="s6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;" edge="1" parent="1" source="s5b" target="s6"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s6" target="s7"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s7" target="s8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f10" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s8" target="s9"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f11" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s9" target="s10"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="f12" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" parent="1" source="s10" target="s11"><mxGeometry relative="1" as="geometry" /></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
