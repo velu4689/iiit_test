@@ -1,0 +1,732 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="0 Compare" id="cmp">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="800">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cmp-1" value="Device channel options: what sits between the broker and the box" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-2" value="Each card is one tab. The agent, MCP Gateway, broker checks and command signing are the same in all of them." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1700" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-3" value="&lt;b&gt;1 MQTT (baseline)&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; AWS IoT Core&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; On the box&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Topic policies only&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; Starting fresh with always-on boxes" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-4" value="&lt;b&gt;2 TR-069&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; ACS plus connection request relay&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; In the broker&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Tool-to-operation mapping&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; An ACS and TR-069 client already exist" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="100" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-5" value="&lt;b&gt;3 TR-369 USP&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; USP controller&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; In the broker&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Tool-to-command mapping&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; You want an always-on industry standard" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="100" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-6" value="&lt;b&gt;4 WebSocket&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; Your connection servers, load balancer, registry&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; On the box&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; The whole connection layer&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; A WebSocket channel already exists" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="310" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-7" value="&lt;b&gt;5 Push wake-up&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; Wake-up channel plus session endpoint&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; On the box&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Session endpoint and wake-up logic&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; Always-on connection cost is a concern" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="310" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-8" value="&lt;b&gt;6 HTTPS polling&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; Command API plus per-box queue&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; On the box&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Queue and asynchronous call handling&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; Simplicity matters more than speed" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="310" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-9" value="&lt;b&gt;7 gRPC streaming&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; Your stream servers, load balancer, registry&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; On the box&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; The whole connection layer&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; You already standardise on gRPC" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="520" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-10" value="&lt;b&gt;8 LwM2M&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; LwM2M server&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; In the broker&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Tool-to-object mapping&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; Rarely a fit for set-top boxes" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="640" y="520" width="570" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="cmp-11" value="&lt;b&gt;9 On-demand tunnel&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Between broker and box:&lt;/b&gt; Tunnel service, plus a control channel&lt;br&gt;&lt;b&gt;MCP server lives:&lt;/b&gt; On the box, as a local server&lt;br&gt;&lt;b&gt;You build:&lt;/b&gt; Tunnel lifecycle and staff controls&lt;br&gt;&lt;b&gt;Best when:&lt;/b&gt; Staff deep-dive on a single box" style="rounded=1;arcSize=4;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;spacingLeft=10;spacingTop=8;spacingRight=10;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="520" width="570" height="190" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="1 MQTT (baseline)" id="mqtt">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mqtt-1" value="Option 1: MQTT through AWS IoT Core (baseline)" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-4" value="Device channel (baseline)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Checks entitlement, signs the command, validates the result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;MCP server on the box, no listening port" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="mqtt-6" target="mqtt-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="mqtt-7" target="mqtt-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="mqtt-8" target="mqtt-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-14" value="&lt;b&gt;AWS IoT Core&lt;/b&gt;&lt;br&gt;MQTT broker, per-box topics, presence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-15" value="Publish to the&lt;br&gt;box's topic" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="mqtt-8" target="mqtt-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-16" value="Box dials out:&lt;br&gt;MQTT, mutual TLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="mqtt-10" target="mqtt-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-17" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker publishes the signed tool call to the box's request topic&lt;br&gt;2. IoT Core delivers it down the connection the box already holds&lt;br&gt;3. MCP server on the box runs the tool&lt;br&gt;4. Box publishes the result to its response topic; broker validates it" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-18" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; This is the baseline the other tabs are compared with&lt;br&gt;&amp;bull; MCP server lives on the box; MCP messages travel unchanged&lt;br&gt;&amp;bull; AWS runs the connection layer; you write the topic policies" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="mqtt-19" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; 2 million always-on connections have a running cost&lt;br&gt;&amp;bull; Topic policy must limit each box to its own topics&lt;br&gt;&amp;bull; Decide what the agent is told when a box is offline" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="2 TR-069" id="tr069">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="tr069-1" value="Option 2: TR-069 (session-based operator management)" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-4" value="Replaces IoT Core: ACS and connection request path" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Hosts the MCP tools and translates them to TR-069 operations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;TR-069 client. No MCP server on the box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-6" target="tr069-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-7" target="tr069-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-8" target="tr069-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-14" value="&lt;b&gt;ACS&lt;/b&gt;&lt;br&gt;TR-069 management server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-15" value="&lt;b&gt;Connection request relay&lt;/b&gt;&lt;br&gt;XMPP or STUN, gets past the home router" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="490" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-16" value="ACS API&lt;br&gt;(HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-8" target="tr069-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-17" value="Box opens a session:&lt;br&gt;CWMP over HTTPS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-10" target="tr069-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-18" value="Ask box to connect" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-14" target="tr069-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-19" value="Box holds a&lt;br&gt;lightweight link" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr069-10" target="tr069-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1510" y="397.5" />
+              <mxPoint x="1510" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tr069-20" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker maps the tool to a TR-069 operation and calls the ACS API&lt;br&gt;2. ACS asks the box to connect, through the relay&lt;br&gt;3. Box opens a session to the ACS, which runs the operation&lt;br&gt;4. ACS returns the result; broker turns it into an MCP response" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-21" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; IoT Core is replaced by the ACS and its connection request path&lt;br&gt;&amp;bull; No MCP server on the box; the MCP tools live in the broker&lt;br&gt;&amp;bull; Tools are limited to the TR-069 data model plus vendor extensions&lt;br&gt;&amp;bull; Can reuse the TR-069 client already on the box, if there is one" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tr069-22" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; Session set-up adds delay to each call unless the session is kept open&lt;br&gt;&amp;bull; The ACS API differs by vendor&lt;br&gt;&amp;bull; The ACS is a high-privilege system: restrict which operations the broker may call" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="3 TR-369 USP" id="tr369">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="tr369-1" value="Option 3: TR-369 / USP (always-on operator management)" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-4" value="Replaces IoT Core: USP controller" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Hosts the MCP tools and translates them to USP operations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;USP agent. No MCP server on the box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr369-6" target="tr369-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr369-7" target="tr369-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr369-8" target="tr369-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-14" value="&lt;b&gt;USP controller&lt;/b&gt;&lt;br&gt;TR-369 management server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-15" value="Controller API&lt;br&gt;(HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr369-8" target="tr369-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-16" value="Always-on USP link:&lt;br&gt;MQTT, WebSocket or STOMP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tr369-10" target="tr369-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-17" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker maps the tool to a USP command and calls the controller API&lt;br&gt;2. Controller sends it down the box's always-on USP link&lt;br&gt;3. USP agent on the box runs it&lt;br&gt;4. Result returns over the same link; broker turns it into an MCP response" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-18" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; IoT Core is replaced by a USP controller&lt;br&gt;&amp;bull; No MCP server on the box; the MCP tools live in the broker&lt;br&gt;&amp;bull; Always-on, so there is no per-call session set-up&lt;br&gt;&amp;bull; If USP runs over MQTT, an MQTT broker still sits between controller and box" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tr369-19" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; Needs a USP agent in the firmware&lt;br&gt;&amp;bull; Tools are limited to the USP data model plus vendor extensions&lt;br&gt;&amp;bull; Check how many boxes in the field can support it" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="4 WebSocket" id="ws">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ws-1" value="Option 4: plain WebSocket to your own connection servers" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-4" value="Replaces IoT Core: connection servers, load balancer, registry" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Checks entitlement, signs the command, validates the result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;MCP server on the box, no listening port" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-6" target="ws-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-7" target="ws-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-8" target="ws-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-14" value="&lt;b&gt;Connection servers&lt;/b&gt;&lt;br&gt;Hold one socket per box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="860" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-15" value="&lt;b&gt;Load balancer&lt;/b&gt;&lt;br&gt;Spreads boxes across servers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-16" value="&lt;b&gt;Connection registry&lt;/b&gt;&lt;br&gt;Device ID to server lookup, presence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="860" y="490" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-17" value="Forward to the&lt;br&gt;box's server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-8" target="ws-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-18" value="Look up server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-8" target="ws-16">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="397.5" />
+              <mxPoint x="760" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ws-19" value="Register" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-14" target="ws-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-15" target="ws-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-21" value="Box dials out:&lt;br&gt;WebSocket, mutual TLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ws-10" target="ws-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-22" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker looks up which connection server holds the box&lt;br&gt;2. Broker forwards the signed tool call to that server&lt;br&gt;3. Server writes it down the box's socket; MCP server on the box runs the tool&lt;br&gt;4. Result returns on the same socket, matched by request ID" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-23" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; IoT Core is replaced by connection servers, a load balancer and a registry that you run&lt;br&gt;&amp;bull; MCP server stays on the box; MCP messages travel unchanged&lt;br&gt;&amp;bull; The device certificate is checked when the socket opens" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ws-24" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; You build presence, reconnect handling and per-device authorization&lt;br&gt;&amp;bull; A server restart drops many sockets at once; boxes must reconnect with a random delay&lt;br&gt;&amp;bull; The registry must stay correct at 2 million entries" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="5 Push wake-up" id="wake">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wake-1" value="Option 5: push wake-up, then connect on demand" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-4" value="Replaces IoT Core: wake-up channel and session endpoint" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Checks entitlement, signs the command, validates the result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;MCP server on the box, connects only when woken" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-6" target="wake-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-7" target="wake-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-8" target="wake-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-14" value="&lt;b&gt;Session endpoint&lt;/b&gt;&lt;br&gt;Short-lived WebSocket per session" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-15" value="&lt;b&gt;Wake-up channel&lt;/b&gt;&lt;br&gt;Slow poll or existing management link" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="490" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-16" value="1. Send wake-up" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-8" target="wake-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="397.5" />
+              <mxPoint x="760" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wake-17" value="Box checks in&lt;br&gt;at a low rate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-10" target="wake-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1510" y="397.5" />
+              <mxPoint x="1510" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wake-18" value="2. Box connects&lt;br&gt;for the session" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-10" target="wake-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-19" value="3. Exchange&lt;br&gt;MCP messages" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="wake-8" target="wake-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-20" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker sends a wake-up for the box through the wake-up channel&lt;br&gt;2. Box sees it on its next check-in and connects to the session endpoint&lt;br&gt;3. Broker and box exchange MCP messages over that connection&lt;br&gt;4. Box disconnects when the session ends" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-21" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; No always-on session connection; one short-lived connection per troubleshooting session&lt;br&gt;&amp;bull; MCP server stays on the box&lt;br&gt;&amp;bull; Needs a separate, low-cost wake-up channel" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="wake-22" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; The first response is delayed by the wake-up time&lt;br&gt;&amp;bull; A custom Linux box has no built-in push service, so the wake-up rides on a slow poll or the existing management link&lt;br&gt;&amp;bull; A wake-up must be signed so it cannot be forged" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="6 HTTPS polling" id="poll">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="poll-1" value="Option 6: polling over HTTPS" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-4" value="Replaces IoT Core: command API and per-box queue" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Checks entitlement, signs the command, validates the result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;MCP server on the box, polls for work" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="poll-6" target="poll-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="poll-7" target="poll-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="poll-8" target="poll-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-14" value="&lt;b&gt;Command API&lt;/b&gt;&lt;br&gt;HTTPS endpoint, mutual TLS" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-15" value="&lt;b&gt;Command queue&lt;/b&gt;&lt;br&gt;Pending commands and results per box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="490" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-16" value="Queue the command,&lt;br&gt;wait for the result" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="poll-8" target="poll-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="397.5" />
+              <mxPoint x="760" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="poll-17" value="Read and write" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="poll-14" target="poll-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-18" value="Box polls,&lt;br&gt;then posts the result" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="poll-10" target="poll-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-19" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker writes the signed tool call to the box's queue and waits&lt;br&gt;2. Box polls the command API and receives it&lt;br&gt;3. MCP server on the box runs the tool&lt;br&gt;4. Box posts the result; broker picks it up and validates it" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-20" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; IoT Core is replaced by an HTTPS command API and a per-box queue&lt;br&gt;&amp;bull; MCP server stays on the box&lt;br&gt;&amp;bull; No long-lived connections at all" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="poll-21" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; Response time equals the poll interval unless long-polling is used&lt;br&gt;&amp;bull; 2 million boxes polling is a steady request load even when idle&lt;br&gt;&amp;bull; Broker must handle calls that time out before the box polls" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="7 gRPC streaming" id="grpc">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="grpc-1" value="Option 7: gRPC streaming to your own stream servers" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-4" value="Replaces IoT Core: stream servers, load balancer, registry" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Checks entitlement, signs the command, validates the result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;MCP server on the box, no listening port" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-6" target="grpc-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-7" target="grpc-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-8" target="grpc-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-14" value="&lt;b&gt;Stream servers&lt;/b&gt;&lt;br&gt;Hold one gRPC stream per box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="860" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-15" value="&lt;b&gt;Load balancer&lt;/b&gt;&lt;br&gt;Must support long HTTP/2 streams" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-16" value="&lt;b&gt;Stream registry&lt;/b&gt;&lt;br&gt;Device ID to server lookup, presence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="860" y="490" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-17" value="Forward to the&lt;br&gt;box's server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-8" target="grpc-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-18" value="Look up server" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-8" target="grpc-16">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="397.5" />
+              <mxPoint x="760" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="grpc-19" value="Register" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-14" target="grpc-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-15" target="grpc-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-21" value="Box dials out:&lt;br&gt;gRPC, mutual TLS" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="grpc-10" target="grpc-15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-22" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker looks up which stream server holds the box&lt;br&gt;2. Broker forwards the signed tool call to that server&lt;br&gt;3. Server sends it down the box's stream; MCP server on the box runs the tool&lt;br&gt;4. Result returns on the same stream, matched by request ID" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-23" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; IoT Core is replaced by stream servers, an HTTP/2 load balancer and a registry that you run&lt;br&gt;&amp;bull; MCP server stays on the box; MCP messages are wrapped in gRPC messages&lt;br&gt;&amp;bull; Typed message contract between box and cloud" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="grpc-24" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; Same build effort as WebSocket&lt;br&gt;&amp;bull; The load balancer and any proxies must support long-lived HTTP/2 streams&lt;br&gt;&amp;bull; The gRPC client library is heavier on the box than a WebSocket client" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="8 LwM2M" id="lwm2m">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lwm2m-1" value="Option 8: LwM2M over CoAP" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-4" value="Replaces IoT Core: LwM2M server" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Hosts the MCP tools and translates them to LwM2M operations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;LwM2M client. No MCP server on the box" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="lwm2m-6" target="lwm2m-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="lwm2m-7" target="lwm2m-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="lwm2m-8" target="lwm2m-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-14" value="&lt;b&gt;LwM2M server&lt;/b&gt;&lt;br&gt;Device registry and object model" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-15" value="Server API&lt;br&gt;(HTTPS)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="lwm2m-8" target="lwm2m-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-16" value="Box registers:&lt;br&gt;CoAP over DTLS (UDP)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="lwm2m-10" target="lwm2m-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-17" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker maps the tool to an LwM2M operation and calls the server API&lt;br&gt;2. Server sends a read or execute to the box&lt;br&gt;3. LwM2M client on the box runs it&lt;br&gt;4. Result returns to the server, then to the broker as an MCP response" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-18" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; IoT Core is replaced by an LwM2M server&lt;br&gt;&amp;bull; No MCP server on the box; the MCP tools live in the broker&lt;br&gt;&amp;bull; Runs over UDP instead of TCP" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lwm2m-19" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; Designed for small sensors; a weak fit for a set-top box&lt;br&gt;&amp;bull; Home routers forget UDP mappings quickly, so the box must refresh often&lt;br&gt;&amp;bull; Tools are limited to the LwM2M object model" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram name="9 On-demand tunnel" id="tun">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1880" pageHeight="880">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="tun-1" value="Option 9: on-demand secure tunnel (staff deep-dive add-on)" style="text;html=1;align=left;verticalAlign=middle;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1700" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-2" value="Blue: you build and run &amp;nbsp;|&amp;nbsp; Green: AWS managed &amp;nbsp;|&amp;nbsp; Purple: TrueFoundry &amp;nbsp;|&amp;nbsp; Orange: management platform or channel that may already exist &amp;nbsp;|&amp;nbsp; Grey: device. Arrows point away from whoever opens the connection. The orange outline marks what differs from the MQTT baseline." style="text;html=1;align=left;verticalAlign=middle;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="55" width="1780" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-3" value="Same in every option" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="130" width="650" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-4" value="Added on top of another option: tunnel service" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#d79b00;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="820" y="130" width="630" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-5" value="Customer home (behind home router)" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;fontStyle=1;dashed=1;fillColor=none;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1570" y="130" width="260" height="460" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-6" value="&lt;b&gt;Agent&lt;/b&gt;&lt;br&gt;Customer or staff agent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-7" value="&lt;b&gt;MCP Gateway&lt;/b&gt;&lt;br&gt;TrueFoundry, one virtual MCP server" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-8" value="&lt;b&gt;Device MCP broker&lt;/b&gt;&lt;br&gt;Checks entitlement, signs the command, validates the result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-9" value="&lt;b&gt;Entitlement service&lt;/b&gt;&lt;br&gt;Is this caller allowed on this box?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="170" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-10" value="&lt;b&gt;Set-top box&lt;/b&gt;&lt;br&gt;MCP server on the box, local HTTP listener behind the tunnel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1600" y="330" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-6" target="tun-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-7" target="tun-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-13" value="Check binding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-8" target="tun-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-14" value="&lt;b&gt;Tunnel service&lt;/b&gt;&lt;br&gt;For example AWS IoT Secure Tunneling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="330" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-15" value="&lt;b&gt;Control channel&lt;/b&gt;&lt;br&gt;Any other option on these tabs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="490" width="190" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-16" value="1. Request a tunnel" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-8" target="tun-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="397.5" />
+              <mxPoint x="760" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tun-17" value="Box listens&lt;br&gt;for requests" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-10" target="tun-15">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1510" y="397.5" />
+              <mxPoint x="1510" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tun-18" value="2. Box opens its&lt;br&gt;end of the tunnel" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-10" target="tun-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-19" value="3. Connect, speak&lt;br&gt;MCP over HTTP" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;endFill=1;fontSize=11;labelBackgroundColor=#ffffff;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="tun-8" target="tun-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-20" value="&lt;b&gt;How a tool call travels&lt;/b&gt;&lt;br&gt;1. Broker asks for a tunnel to the box through the control channel&lt;br&gt;2. Box opens its end of the tunnel outward&lt;br&gt;3. Broker connects to the other end and speaks MCP over HTTP to the box&lt;br&gt;4. The tunnel is closed when the session ends" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="40" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-21" value="&lt;b&gt;What changes compared with MQTT&lt;/b&gt;&lt;br&gt;&amp;bull; Adds a tunnel service on top of one of the other options&lt;br&gt;&amp;bull; MCP server on the box becomes a local HTTP server, reachable only through the tunnel&lt;br&gt;&amp;bull; One tunnel per session" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="640" y="630" width="560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="tun-22" value="&lt;b&gt;Watch for&lt;/b&gt;&lt;br&gt;&amp;bull; Not a main channel: it needs another option to request the tunnel&lt;br&gt;&amp;bull; A tunnel gives wider access than single messages, so keep it staff-only and time-limited&lt;br&gt;&amp;bull; Per-tunnel cost and set-up time" style="shape=note;size=14;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="630" width="590" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
