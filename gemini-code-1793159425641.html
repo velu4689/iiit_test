@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TrueFoundry 4x Okta Auth Servers (Non-Prod/Prod × Std/CPNI) Architecture</title>
+<style>
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }
+  .toolbar { max-width: 1580px; margin: 0 auto 20px auto; background: #1e293b; padding: 16px 24px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
+  .toolbar h2 { margin: 0; font-size: 18px; color: #38bdf8; }
+  .btn-group { display: flex; gap: 12px; }
+  button { background: #2563eb; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s; }
+  button:hover { background: #1d4ed8; }
+  .diagram-card { max-width: 1580px; margin: 0 auto 36px auto; background: #ffffff; border-radius: 12px; padding: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); overflow-x: auto; }
+  .diagram-title { color: #0f172a; font-size: 19px; font-weight: 700; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+  svg { width: 100%; height: auto; display: block; background: #ffffff; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h2>Revised Architecture: 4 Isolated Okta Auth Servers (Non-Prod vs. Prod × Non-CPNI vs. CPNI)</h2>
+    <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Developers in Kiro only authenticate against the 2 Non-Prod Auth Servers. The 2 Prod Auth Servers enforce Limited Scope for deployed workloads.</div>
+  </div>
+  <div class="btn-group">
+    <button onclick="downloadPNG('four-auth-svg', 'TrueFoundry_4_Okta_Auth_Servers_Architecture.png')">⬇ Download High-Res Diagram (.PNG)</button>
+  </div>
+</div>
+
+<div class="diagram-card">
+  <div class="diagram-title">
+    <span>End-to-End Level-3 Architecture: 4 Okta Custom Auth Servers ➔ 3 Control Towers (12 Data Planes) ➔ Per-App Cost Attribution</span>
+    <span style="font-size: 12px; color: #64748b;">Cryptographic Issuer Isolation per Tier</span>
+  </div>
+
+  <svg id="four-auth-svg" viewBox="0 0 1560 900" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb"/>
+      </marker>
+      <marker id="arr-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#d97706"/>
+      </marker>
+      <marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669"/>
+      </marker>
+      <marker id="arr-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#dc2626"/>
+      </marker>
+      <marker id="arr-dark" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#1e293b"/>
+      </marker>
+    </defs>
+
+    <rect width="1560" height="900" fill="#ffffff"/>
+
+    <!-- ======================================================= -->
+    <!-- COLUMN 1: DEVELOPER LAPTOP VS PROD WORKLOAD CALLERS      -->
+    <!-- ======================================================= -->
+    <!-- Top Left: Developer Laptop (Non-Prod Only) -->
+    <rect x="20" y="30" width="340" height="445" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <rect x="20" y="30" width="340" height="36" rx="8" fill="#1d4ed8"/>
+    <text x="190" y="53" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">1A. DEVELOPER LAPTOP (NON-PROD TESTING ONLY)</text>
+
+    <rect x="38" y="80" width="304" height="42" rx="6" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="190" y="99" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">⛔ Zscaler Blocks Direct Raw In-VPC Data Plane</text>
+    <text x="190" y="114" fill="#b91c1c" font-size="10" text-anchor="middle">Zero Static VATs on Laptop — Short-Lived Tokens Only</text>
+
+    <rect x="38" y="136" width="304" height="95" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <text x="190" y="158" fill="#1e3a8a" font-size="13" font-weight="bold" text-anchor="middle">Kiro IDE (Local Worker Laptop)</text>
+    <text x="52" y="178" fill="#334155" font-size="11">• Code Assist: Calls AWS Kiro Endpoint (IAM)</text>
+    <text x="52" y="196" fill="#334155" font-size="11">• Script Validation: Calls localhost:8443</text>
+    <text x="52" y="214" fill="#1d4ed8" font-size="10" font-family="monospace" font-weight="bold">Headers: Bearer &lt;NP-JWT&gt; + X-TFY-App: app-1</text>
+
+    <rect x="38" y="245" width="304" height="105" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2"/>
+    <text x="190" y="267" fill="#0369a1" font-size="13" font-weight="bold" text-anchor="middle">Local CLI Login (`~/.truefoundry/config`)</text>
+    <text x="52" y="287" fill="#334155" font-size="11">1. Std Dev: `tfy login --env nonprod-std`</text>
+    <text x="52" y="305" fill="#b45309" font-size="11" font-weight="bold">2. CPNI Dev: `tfy login --env nonprod-cpni`</text>
+    <text x="52" y="325" fill="#dc2626" font-size="10" font-weight="bold">⛔ Cannot request tokens from Prod Auth Servers!</text>
+
+    <rect x="38" y="365" width="304" height="92" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="190" y="388" fill="#92400e" font-size="13" font-weight="bold" text-anchor="middle">EC2 Bastion SSM / SSH Tunnel Client</text>
+    <text x="190" y="408" fill="#78350f" font-size="11" text-anchor="middle">IAM-gated tunnel to CT1 / CT2 / CT3</text>
+    <text x="190" y="425" fill="#b45309" font-size="10" font-family="monospace" text-anchor="middle">Non-Prod Bastion OR CPNI Non-Prod Bastion</text>
+    <text x="190" y="444" fill="#047857" font-size="10" font-weight="bold" text-anchor="middle">Bypasses Zscaler inspection of tokens</text>
+
+    <!-- Bottom Left: Production Workloads (Limited Scope Callers) -->
+    <rect x="20" y="500" width="340" height="370" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <rect x="20" y="500" width="340" height="36" rx="8" fill="#047857"/>
+    <text x="190" y="523" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">1B. PROD WORKLOADS &amp; CI/CD (LIMITED SCOPE)</text>
+
+    <rect x="38" y="555" width="304" height="95" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+    <text x="190" y="578" fill="#065f46" font-size="13" font-weight="bold" text-anchor="middle">Deployed Prod Apps / Agents / MCPs</text>
+    <text x="52" y="598" fill="#334155" font-size="11">• Running inside CT1, CT2, CT3 EKS/ECS</text>
+    <text x="52" y="616" fill="#334155" font-size="11">• Uses OAuth `client_credentials` / Workload</text>
+    <text x="62" y="632" fill="#047857" font-size="10" font-weight="bold">Identity OR App Virtual Account Token (VAT)</text>
+
+    <rect x="38" y="665" width="304" height="95" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+    <text x="190" y="688" fill="#065f46" font-size="13" font-weight="bold" text-anchor="middle">CI/CD Pipeline + AWS Secrets Manager</text>
+    <text x="52" y="708" fill="#334155" font-size="11">• Provisions Team ➔ App Virtual Accounts</text>
+    <text x="52" y="726" fill="#334155" font-size="11">• Stores App VATs in CT-local Secrets Mgr:</text>
+    <text x="58" y="744" fill="#0f172a" font-size="10" font-family="monospace">/ct1/prod/teamA/app1/vat | /cpni-prod/...</text>
+
+    <rect x="38" y="775" width="304" height="75" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+    <text x="190" y="798" fill="#991b1b" font-size="12" font-weight="bold" text-anchor="middle">Why Prod Auth Servers Are Limited Scope:</text>
+    <text x="190" y="816" fill="#b91c1c" font-size="10" text-anchor="middle">Interactive Developer PKCE Login is DISABLED.</text>
+    <text x="190" y="832" fill="#b91c1c" font-size="10" text-anchor="middle">Only Machine Identities / Break-Glass SRE allowed.</text>
+
+    <!-- ======================================================= -->
+    <!-- COLUMN 2: OKTA TENANT WITH 4 ISOLATED AUTHZ SERVERS      -->
+    <!-- ======================================================= -->
+    <rect x="415" y="30" width="490" height="840" rx="12" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.5"/>
+    <rect x="415" y="30" width="490" height="40" rx="10" fill="#0284c7"/>
+    <text x="660" y="55" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">2. OKTA IDP — 4 DEDICATED CUSTOM AUTHZ SERVERS</text>
+
+    <!-- Okta Org Directory Header -->
+    <rect x="435" y="82" width="450" height="52" rx="8" fill="#0369a1"/>
+    <text x="660" y="104" fill="#ffffff" font-size="13" font-weight="bold" text-anchor="middle">Okta Org Directory (Single Corporate Identity Source)</text>
+    <text x="660" y="122" fill="#e0f2fe" font-size="11" text-anchor="middle">Holds Users, Service Accounts &amp; CPNI Clearance (`cpni_cleared`) — Zero Team/App Bloat</text>
+
+    <!-- NON-PROD AUTH SERVERS GROUP (OPEN TO DEVS IN KIRO) -->
+    <rect x="435" y="148" width="450" height="325" rx="10" fill="#f8fafc" stroke="#2563eb" stroke-width="2" stroke-dasharray="6,4"/>
+    <rect x="450" y="138" width="330" height="24" rx="4" fill="#2563eb"/>
+    <text x="615" y="154" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">DEVELOPER-ACCESSIBLE AUTH SERVERS (NON-PROD)</text>
+
+    <!-- Auth Server 1: Non-Prod Non-CPNI -->
+    <rect x="450" y="172" width="420" height="135" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <rect x="450" y="172" width="420" height="28" rx="6" fill="#2563eb"/>
+    <text x="660" y="191" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Auth Server 1: NON-PROD NON-CPNI (`aus-np-std`)</text>
+    <text x="465" y="218" fill="#334155" font-size="11">• **Issuer:** `https://okta.corp.com/oauth2/aus-np-std` | **Aud:** `api://tfy-np-std`</text>
+    <text x="465" y="236" fill="#334155" font-size="11">• **Allowed Grants:** OIDC `authorization_code` (PKCE) for Kiro Devs + Token Exchange</text>
+    <text x="465" y="254" fill="#334155" font-size="11">• **Access Policy:** All onboarded AI Devs | **Token TTL:** 4–8 Hours (Short-Lived)</text>
+    <text x="465" y="272" fill="#1d4ed8" font-size="11" font-weight="bold">• **Trusted By:** CT1, CT2, CT3 Standard Non-Prod Data Planes ONLY</text>
+    <text x="465" y="290" fill="#dc2626" font-size="10" font-weight="bold">⛔ Token cryptographically rejected by CPNI and Prod Data Planes</text>
+
+    <!-- Auth Server 2: Non-Prod CPNI -->
+    <rect x="450" y="322" width="420" height="135" rx="8" fill="#ffffff" stroke="#d97706" stroke-width="2"/>
+    <rect x="450" y="322" width="420" height="28" rx="6" fill="#d97706"/>
+    <text x="660" y="341" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Auth Server 2: NON-PROD CPNI (`aus-np-cpni`)</text>
+    <text x="465" y="368" fill="#334155" font-size="11">• **Issuer:** `https://okta.corp.com/oauth2/aus-np-cpni` | **Aud:** `api://tfy-np-cpni`</text>
+    <text x="465" y="386" fill="#334155" font-size="11">• **Allowed Grants:** OIDC `authorization_code` (PKCE) + **Step-Up FIDO2/WebAuthn MFA**</text>
+    <text x="465" y="404" fill="#dc2626" font-size="11" font-weight="bold">• **Access Policy:** Requires `user.cpni_cleared == true` | **Token TTL:** 1 Hour Strict</text>
+    <text x="465" y="422" fill="#b45309" font-size="11" font-weight="bold">• **Trusted By:** CT1, CT2, CT3 CPNI Non-Prod Data Planes ONLY</text>
+    <text x="465" y="440" fill="#dc2626" font-size="10" font-weight="bold">⛔ Token cryptographically rejected by Prod CPNI Data Planes</text>
+
+    <!-- PROD AUTH SERVERS GROUP (LIMITED SCOPE - NO DEV TESTING) -->
+    <rect x="435" y="495" width="450" height="355" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,4"/>
+    <rect x="450" y="483" width="380" height="24" rx="4" fill="#dc2626"/>
+    <text x="640" y="499" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">LIMITED-SCOPE AUTH SERVERS (PROD — NO DEV KIRO ACCESS)</text>
+
+    <!-- Auth Server 3: Prod Non-CPNI -->
+    <rect x="450" y="520" width="420" height="150" rx="8" fill="#ffffff" stroke="#059669" stroke-width="2"/>
+    <rect x="450" y="520" width="420" height="28" rx="6" fill="#059669"/>
+    <text x="660" y="539" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Auth Server 3: PROD NON-CPNI (`aus-prod-std` — Limited Scope)</text>
+    <text x="465" y="565" fill="#334155" font-size="11">• **Issuer:** `https://okta.corp.com/oauth2/aus-prod-std` | **Aud:** `api://tfy-prod-std`</text>
+    <text x="465" y="583" fill="#dc2626" font-size="11" font-weight="bold">• **Interactive Dev Login:** DISABLED (Developers cannot mint Prod tokens)</text>
+    <text x="465" y="601" fill="#334155" font-size="11">• **Allowed Grants:** `client_credentials` / Workload Token Exchange (for Prod EKS</text>
+    <text x="475" y="617" fill="#334155" font-size="11">Agents, MCPs, CI/CD) + Break-Glass Admin | **TTL:** 15–60 Mins</text>
+    <text x="465" y="637" fill="#047857" font-size="11" font-weight="bold">• **Trusted By:** CT1, CT2, CT3 Standard Prod Data Planes (+ TFY App VATs)</text>
+
+    <!-- Auth Server 4: Prod CPNI -->
+    <rect x="450" y="685" width="420" height="150" rx="8" fill="#ffffff" stroke="#dc2626" stroke-width="2"/>
+    <rect x="450" y="685" width="420" height="28" rx="6" fill="#991b1b"/>
+    <text x="660" y="704" fill="#ffffff" font-size="12" font-weight="bold" text-anchor="middle">Auth Server 4: PROD CPNI (`aus-prod-cpni` — Strictly Limited Scope)</text>
+    <text x="465" y="730" fill="#334155" font-size="11">• **Issuer:** `https://okta.corp.com/oauth2/aus-prod-cpni` | **Aud:** `api://tfy-prod-cpni`</text>
+    <text x="465" y="748" fill="#dc2626" font-size="11" font-weight="bold">• **Interactive Dev Login:** STRICTLY DISABLED</text>
+    <text x="465" y="766" fill="#334155" font-size="11">• **Allowed Grants:** Private-Key JWT / mTLS `client_credentials` from CPNI Prod</text>
+    <text x="475" y="782" fill="#334155" font-size="11">Service Accounts ONLY | **TTL:** 15 Mins Strict</text>
+    <text x="465" y="802" fill="#991b1b" font-size="11" font-weight="bold">• **Trusted By:** CT1, CT2, CT3 CPNI Prod Data Planes (+ CPNI App VATs)</text>
+
+    <!-- ======================================================= -->
+    <!-- COLUMN 3: 3 CONTROL TOWERS × 4 DATA PLANES + CONTROL PLANE -->
+    <!-- ======================================================= -->
+    <rect x="960" y="30" width="580" height="840" rx="12" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+    <rect x="960" y="30" width="580" height="40" rx="10" fill="#0f172a"/>
+    <text x="1250" y="55" fill="#ffffff" font-size="14" font-weight="bold" text-anchor="middle">3. 3x CONTROL TOWERS (12 DATA PLANES) + TRUEFOUNDRY CONTROL PLANE</text>
+
+    <!-- Tier 1 Data Planes across CT1, CT2, CT3 -->
+    <rect x="980" y="160" width="540" height="135" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="1250" y="182" fill="#1e3a8a" font-size="13" font-weight="bold" text-anchor="middle">NON-PROD NON-CPNI DATA PLANES (Across Control Tower 1, 2, &amp; 3)</text>
+    <text x="1250" y="200" fill="#1d4ed8" font-size="11" font-family="monospace" text-anchor="middle">Validates JWKS from: Auth Server 1 (`aus-np-std`) | ✔ EC2 Bastion Open for Kiro Devs</text>
+    <rect x="995" y="212" width="160" height="68" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+    <text x="1075" y="232" fill="#1d4ed8" font-size="11" font-weight="bold" text-anchor="middle">CT1 Non-Prod DP</text>
+    <text x="1075" y="248" fill="#334155" font-size="10" text-anchor="middle">Teams A, B (Apps 1..N)</text>
+    <text x="1075" y="264" fill="#047857" font-size="10" font-weight="bold" text-anchor="middle">Bastion + Dev JWT</text>
+
+    <rect x="1170" y="212" width="160" height="68" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+    <text x="1250" y="232" fill="#1d4ed8" font-size="11" font-weight="bold" text-anchor="middle">CT2 Non-Prod DP</text>
+    <text x="1250" y="248" fill="#334155" font-size="10" text-anchor="middle">Teams C, D (Apps 1..N)</text>
+    <text x="1250" y="264" fill="#047857" font-size="10" font-weight="bold" text-anchor="middle">Bastion + Dev JWT</text>
+
+    <rect x="1345" y="212" width="160" height="68" rx="6" fill="#ffffff" stroke="#3b82f6"/>
+    <text x="1425" y="232" fill="#1d4ed8" font-size="11" font-weight="bold" text-anchor="middle">CT3 Non-Prod DP</text>
+    <text x="1425" y="248" fill="#334155" font-size="10" text-anchor="middle">Teams E, F (Apps 1..N)</text>
+    <text x="1425" y="264" fill="#047857" font-size="10" font-weight="bold" text-anchor="middle">Bastion + Dev JWT</text>
+
+    <!-- Tier 2 Data Planes across CT1, CT2, CT3 -->
+    <rect x="980" y="312" width="540" height="135" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+    <text x="1250" y="334" fill="#92400e" font-size="13" font-weight="bold" text-anchor="middle">NON-PROD CPNI DATA PLANES (Across Control Tower 1, 2, &amp; 3)</text>
+    <text x="1250" y="352" fill="#b45309" font-size="11" font-family="monospace" text-anchor="middle">Validates JWKS from: Auth Server 2 (`aus-np-cpni`) | 🔒 Hardened Bastion (CPNI Devs)</text>
+    <rect x="995" y="364" width="160" height="68" rx="6" fill="#ffffff" stroke="#d97706"/>
+    <text x="1075" y="384" fill="#b45309" font-size="11" font-weight="bold" text-anchor="middle">CT1 CPNI Non-Prod</text>
+    <text x="1075" y="400" fill="#334155" font-size="10" text-anchor="middle">CPNI Teams / Apps</text>
+    <text x="1075" y="416" fill="#dc2626" font-size="10" font-weight="bold" text-anchor="middle">1h MFA Token + DLP</text>
+
+    <rect x="1170" y="364" width="160" height="68" rx="6" fill="#ffffff" stroke="#d97706"/>
+    <text x="1250" y="384" fill="#b45309" font-size="11" font-weight="bold" text-anchor="middle">CT2 CPNI Non-Prod</text>
+    <text x="1250" y="400" fill="#334155" font-size="10" text-anchor="middle">CPNI Teams / Apps</text>
+    <text x="1250" y="416" fill="#dc2626" font-size="10" font-weight="bold" text-anchor="middle">1h MFA Token + DLP</text>
+
+    <rect x="1345" y="364" width="160" height="68" rx="6" fill="#ffffff" stroke="#d97706"/>
+    <text x="1425" y="384" fill="#b45309" font-size="11" font-weight="bold" text-anchor="middle">CT3 CPNI Non-Prod</text>
+    <text x="1425" y="400" fill="#334155" font-size="10" text-anchor="middle">CPNI Teams / Apps</text>
+    <text x="1425" y="416" fill="#dc2626" font-size="10" font-weight="bold" text-anchor="middle">1h MFA Token + DLP</text>
+
+    <!-- Tier 3 Data Planes across CT1, CT2, CT3 -->
+    <rect x="980" y="475" width="540" height="125" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+    <text x="1250" y="497" fill="#065f46" font-size="13" font-weight="bold" text-anchor="middle">PROD NON-CPNI DATA PLANES (Across Control Tower 1, 2, &amp; 3)</text>
+    <text x="1250" y="515" fill="#047857" font-size="11" font-family="monospace" text-anchor="middle">Validates: Auth Server 3 (`aus-prod-std`) + App VATs | ⛔ ZERO Dev Bastion Access</text>
+    <rect x="995" y="525" width="160" height="62" rx="6" fill="#ffffff" stroke="#059669"/>
+    <text x="1075" y="545" fill="#047857" font-size="11" font-weight="bold" text-anchor="middle">CT1 Prod DP</text>
+    <text x="1075" y="562" fill="#334155" font-size="10" text-anchor="middle">In-VPC Prod Apps Only</text>
+    <text x="1075" y="577" fill="#047857" font-size="9" font-family="monospace" text-anchor="middle">App VAT / M2M Token</text>
+
+    <rect x="1170" y="525" width="160" height="62" rx="6" fill="#ffffff" stroke="#059669"/>
+    <text x="1250" y="545" fill="#047857" font-size="11" font-weight="bold" text-anchor="middle">CT2 Prod DP</text>
+    <text x="1250" y="562" fill="#334155" font-size="10" text-anchor="middle">In-VPC Prod Apps Only</text>
+    <text x="1250" y="577" fill="#047857" font-size="9" font-family="monospace" text-anchor="middle">App VAT / M2M Token</text>
+
+    <rect x="1345" y="525" width="160" height="62" rx="6" fill="#ffffff" stroke="#059669"/>
+    <text x="1425" y="545" fill="#047857" font-size="11" font-weight="bold" text-anchor="middle">CT3 Prod DP</text>
+    <text x="1425" y="562" fill="#334155" font-size="10" text-anchor="middle">In-VPC Prod Apps Only</text>
+    <text x="1425" y="577" fill="#047857" font-size="9" font-family="monospace" text-anchor="middle">App VAT / M2M Token</text>
+
+    <!-- Tier 4 Data Planes across CT1, CT2, CT3 -->
+    <rect x="980" y="615" width="540" height="125" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+    <text x="1250" y="637" fill="#991b1b" font-size="13" font-weight="bold" text-anchor="middle">PROD CPNI DATA PLANES (Across Control Tower 1, 2, &amp; 3)</text>
+    <text x="1250" y="655" fill="#dc2626" font-size="11" font-family="monospace" text-anchor="middle">Validates: Auth Server 4 (`aus-prod-cpni`) + CPNI VATs | ⛔ STRICT AIR-GAP</text>
+    <rect x="995" y="665" width="160" height="62" rx="6" fill="#ffffff" stroke="#dc2626"/>
+    <text x="1075" y="685" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">CT1 CPNI Prod DP</text>
+    <text x="1075" y="702" fill="#334155" font-size="10" text-anchor="middle">Regulated CPNI Pods</text>
+    <text x="1075" y="717" fill="#dc2626" font-size="9" font-family="monospace" text-anchor="middle">CPNI VAT + KMS</text>
+
+    <rect x="1170" y="665" width="160" height="62" rx="6" fill="#ffffff" stroke="#dc2626"/>
+    <text x="1250" y="685" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">CT2 CPNI Prod DP</text>
+    <text x="1250" y="702" fill="#334155" font-size="10" text-anchor="middle">Regulated CPNI Pods</text>
+    <text x="1250" y="717" fill="#dc2626" font-size="9" font-family="monospace" text-anchor="middle">CPNI VAT + KMS</text>
+
+    <rect x="1345" y="665" width="160" height="62" rx="6" fill="#ffffff" stroke="#dc2626"/>
+    <text x="1425" y="685" fill="#991b1b" font-size="11" font-weight="bold" text-anchor="middle">CT3 CPNI Prod DP</text>
+    <text x="1425" y="702" fill="#334155" font-size="10" text-anchor="middle">Regulated CPNI Pods</text>
+    <text x="1425" y="717" fill="#dc2626" font-size="9" font-family="monospace" text-anchor="middle">CPNI VAT + KMS</text>
+
+    <!-- Bottom Right: TrueFoundry SaaS Control Plane -->
+    <rect x="980" y="755" width="540" height="100" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+    <text x="1250" y="780" fill="#38bdf8" font-size="13" font-weight="bold" text-anchor="middle">TrueFoundry Central SaaS Control Plane &amp; Multi-App Cost Engine</text>
+    <text x="1250" y="802" fill="#f8fafc" font-size="11" text-anchor="middle">• Registers all 4 Okta Auth Server JWKS Issuers &amp; syncs to matching Data Plane Clusters via NATS</text>
+    <text x="1250" y="822" fill="#f8fafc" font-size="11" text-anchor="middle">• Maps Users &amp; Workloads ➔ Control Tower ➔ Env ➔ Team ➔ Application Virtual Account</text>
+    <text x="1250" y="842" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">• Real-Time Chargeback Dashboard: Slices Spend by CT1/2/3, CPNI vs Std, Team, &amp; Individual App</text>
+
+    <!-- ======================================================= -->
+    <!-- CONNECTORS BETWEEN ZONES                                -->
+    <!-- ======================================================= -->
+    <!-- Dev Laptop to Non-Prod Auth Server 1 & 2 -->
+    <path d="M 342 280 L 390 280 L 390 235 L 445 235" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arr-blue)"/>
+    <path d="M 342 300 L 390 300 L 390 385 L 445 385" fill="none" stroke="#d97706" stroke-width="2.5" marker-end="url(#arr-amber)"/>
+
+    <!-- Prod Workloads to Prod Auth Server 3 & 4 -->
+    <path d="M 342 595 L 395 595 L 395 595 L 445 595" fill="none" stroke="#059669" stroke-width="2.5" marker-end="url(#arr-green)"/>
+    <path d="M 342 620 L 395 620 L 395 755 L 445 755" fill="none" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arr-red)"/>
+
+    <!-- 4 Auth Servers to 4 Data Plane Tiers -->
+    <line x1="870" y1="235" x2="975" y2="235" stroke="#2563eb" stroke-width="3" marker-end="url(#arr-blue)"/>
+    <line x1="870" y1="385" x2="975" y2="385" stroke="#d97706" stroke-width="3" marker-end="url(#arr-amber)"/>
+    <line x1="870" y1="560" x2="975" y2="560" stroke="#059669" stroke-width="3" marker-end="url(#arr-green)"/>
+    <line x1="870" y1="710" x2="975" y2="710" stroke="#dc2626" stroke-width="3" marker-end="url(#arr-red)"/>
+
+    <!-- Bastion Tunnel Path from Dev Laptop to Non-Prod Data Planes -->
+    <path d="M 342 415 L 402 415 L 402 95 L 935 95 L 935 205 L 975 205" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arr-blue)"/>
+    <rect x="570" y="82" width="320" height="22" rx="4" fill="#1d4ed8"/>
+    <text x="730" y="97" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">Encrypted EC2 Bastion Tunnel (To Non-Prod Data Planes Only)</text>
+  </svg>
+</div>
+
+<script>
+function downloadPNG(svgId, filename) {
+  const svgElement = document.getElementById(svgId);
+  const serializer = new XMLSerializer();
+  let svgString = serializer.serializeToString(svgElement);
+  const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+  const URL = window.URL || window.webkitURL || window;
+  const blobURL = URL.createObjectURL(svgBlob);
+  
+  const image = new Image();
+  image.onload = function() {
+    const canvas = new document.createElement('canvas');
+    canvas.width = svgElement.viewBox.baseVal.width * 2;
+    canvas.height = svgElement.viewBox.baseVal.height * 2;
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(blobURL);
+    
+    const imgURI = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.download = filename;
+    a.href = imgURI;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  image.src = blobURL;
+}
+</script>
+</body>
+</html>
