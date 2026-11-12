@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Agent Platform Walkthrough</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a single reading column (max 760px) with a sticky contents bar; each animation sits in a quiet framed panel. */
+:root{
+--ink:#18202a;--ink-2:#4a5563;--ink-3:#7a8594;--paper:#f6f7f8;--panel:#ffffff;--line:#d9dee4;--accent:#0f6e64;
+--font-display:"IBM Plex Serif",Georgia,serif;--font-sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+--surface-0:var(--paper);--surface-1:#eef1f4;--surface-2:var(--panel);
+--text-primary:var(--ink);--text-secondary:var(--ink-2);--text-muted:var(--ink-3);
+--border:var(--line);--border-strong:#b9c1cb;
+--bg-accent:#e3f0fb;--text-accent:#0c447c;--border-accent:#378add;
+--bg-success:#e2f4ec;--text-success:#0f6e56;
+--bg-warning:#faefd9;--text-warning:#7a4a08;
+--bg-danger:#fbe9e9;--text-danger:#9b2c2c;--border-danger:#e24b4a;
+--radius:8px;
+--n-pu-f:#EEEDFE;--n-pu-s:#534AB7;--n-pu-t:#3C3489;--n-te-f:#E1F5EE;--n-te-s:#0F6E56;--n-te-t:#085041;--n-co-f:#FAECE7;--n-co-s:#993C1D;--n-co-t:#712B13;
+color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+--ink:#e7ebef;--ink-2:#b3bcc6;--ink-3:#85909c;--paper:#12161b;--panel:#1a2027;--line:#2c343d;--accent:#5dcaa5;
+--surface-1:#212830;--border-strong:#46515d;
+--bg-accent:#14304d;--text-accent:#9cc8f2;--border-accent:#5a9fe0;
+--bg-success:#0f3328;--text-success:#7fd8b4;--bg-warning:#3d2c0c;--text-warning:#f2c26b;--bg-danger:#3d1717;--text-danger:#f4a3a3;--border-danger:#e26868;
+--n-pu-f:#3C3489;--n-pu-s:#AFA9EC;--n-pu-t:#CECBF6;--n-te-f:#085041;--n-te-s:#5DCAA5;--n-te-t:#9FE1CB;--n-co-f:#712B13;--n-co-s:#F0997B;--n-co-t:#F5C4B3;
+color-scheme:dark}}
+:root[data-theme="dark"]{
+--ink:#e7ebef;--ink-2:#b3bcc6;--ink-3:#85909c;--paper:#12161b;--panel:#1a2027;--line:#2c343d;--accent:#5dcaa5;
+--surface-1:#212830;--border-strong:#46515d;
+--bg-accent:#14304d;--text-accent:#9cc8f2;--border-accent:#5a9fe0;
+--bg-success:#0f3328;--text-success:#7fd8b4;--bg-warning:#3d2c0c;--text-warning:#f2c26b;--bg-danger:#3d1717;--text-danger:#f4a3a3;--border-danger:#e26868;
+--n-pu-f:#3C3489;--n-pu-s:#AFA9EC;--n-pu-t:#CECBF6;--n-te-f:#085041;--n-te-s:#5DCAA5;--n-te-t:#9FE1CB;--n-co-f:#712B13;--n-co-s:#F0997B;--n-co-t:#F5C4B3;
+color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--surface-0);color:var(--text-primary);font-family:var(--font-sans);font-size:16px;line-height:1.6}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+header.top{max-width:760px;margin:0 auto;padding:40px 16px 8px}
+header.top h1{font-family:var(--font-display);font-weight:500;font-size:34px;line-height:1.2;margin:0 0 10px;text-wrap:balance}
+header.top p{color:var(--text-secondary);margin:0 0 6px;max-width:65ch}
+nav.toc{position:sticky;top:0;z-index:5;background:var(--surface-0);border-bottom:1px solid var(--border)}
+nav.toc div{max-width:760px;margin:0 auto;padding:10px 16px;display:flex;gap:6px;flex-wrap:wrap}
+nav.toc a{font-size:13px;color:var(--text-secondary);text-decoration:none;padding:4px 10px;border:1px solid var(--border);border-radius:999px}
+nav.toc a:hover,nav.toc a:focus-visible{color:var(--accent);border-color:var(--accent);outline:none}
+main{max-width:760px;margin:0 auto;padding:8px 16px 64px}
+.part{padding-top:36px}
+.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.part h2{font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.25;margin:4px 0 8px;text-wrap:balance}
+.lede{color:var(--text-secondary);margin:0 0 14px;max-width:65ch}
+.widget{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:18px;overflow-x:auto}
+.widget svg{max-width:100%;height:auto}
+button{font-family:var(--font-sans);font-size:13px;color:var(--text-primary);background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius);padding:5px 12px;cursor:pointer;line-height:1.4}
+button:hover{background:var(--surface-1)}
+button:focus-visible{outline:2px solid var(--border-accent);outline-offset:2px}
+.th{font-family:var(--font-sans);font-size:14px;font-weight:500;fill:var(--text-primary)}
+.box{fill:var(--surface-1);stroke:var(--border-strong)}
+.prose h3{font-family:var(--font-display);font-weight:500;font-size:20px;margin:28px 0 8px}
+.prose ul,.prose ol{padding-left:22px;margin:6px 0 12px}
+.prose li{margin:4px 0}
+.prose b{font-weight:600}
+.prose code{font-family:var(--font-mono);font-size:13px;background:var(--surface-1);padding:1px 5px;border-radius:5px}
+.prose .note{font-size:14px;color:var(--text-warning);background:var(--bg-warning);padding:8px 12px;border-radius:var(--radius)}
+.prose table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 12px;display:block;overflow-x:auto}
+.prose th,.prose td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--border)}
+.prose th{font-weight:600;color:var(--text-secondary);font-size:13px}
+footer{max-width:760px;margin:0 auto;padding:0 16px 48px;font-size:13px;color:var(--text-muted)}
+footer a{color:var(--text-secondary)}
+@media (max-width:560px){.widget{padding:12px}header.top h1{font-size:28px}}
+
+.ts{font-family:var(--font-sans);font-size:12px;fill:var(--text-secondary)}
+.c-gray>rect,.c-gray>circle{fill:#F1EFE8;stroke:#5F5E5A}.c-gray>text{fill:#444441}
+.c-amber>rect,.c-amber>circle{fill:#FAEEDA;stroke:#854F0B}.c-amber>text{fill:#633806}
+.c-red>rect,.c-red>circle{fill:#FCEBEB;stroke:#A32D2D}.c-red>text{fill:#791F1F}
+.c-blue>rect,.c-blue>circle{fill:#E6F1FB;stroke:#185FA5}.c-blue>text{fill:#0C447C}
+.c-green>rect,.c-green>circle{fill:#EAF3DE;stroke:#3B6D11}.c-green>text{fill:#27500A}
+.c-pink>rect,.c-pink>circle{fill:#FBEAF0;stroke:#993556}.c-pink>text{fill:#72243E}
+.c-teal>rect,.c-teal>circle{fill:#E1F5EE;stroke:#0F6E56}.c-teal>text{fill:#085041}
+.c-purple>rect,.c-purple>circle{fill:#EEEDFE;stroke:#534AB7}.c-purple>text{fill:#3C3489}
+.c-coral>rect,.c-coral>circle{fill:#FAECE7;stroke:#993C1D}.c-coral>text{fill:#712B13}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c-gray>rect,:root:not([data-theme="light"]) .c-gray>circle{fill:#444441;stroke:#B4B2A9}
+:root:not([data-theme="light"]) .c-gray>text{fill:#D3D1C7}
+:root:not([data-theme="light"]) .c-amber>rect,:root:not([data-theme="light"]) .c-amber>circle{fill:#633806;stroke:#EF9F27}
+:root:not([data-theme="light"]) .c-amber>text{fill:#FAC775}
+:root:not([data-theme="light"]) .c-red>rect,:root:not([data-theme="light"]) .c-red>circle{fill:#791F1F;stroke:#F09595}
+:root:not([data-theme="light"]) .c-red>text{fill:#F7C1C1}
+:root:not([data-theme="light"]) .c-blue>rect,:root:not([data-theme="light"]) .c-blue>circle{fill:#0C447C;stroke:#85B7EB}
+:root:not([data-theme="light"]) .c-blue>text{fill:#B5D4F4}
+:root:not([data-theme="light"]) .c-green>rect,:root:not([data-theme="light"]) .c-green>circle{fill:#27500A;stroke:#97C459}
+:root:not([data-theme="light"]) .c-green>text{fill:#C0DD97}
+:root:not([data-theme="light"]) .c-pink>rect,:root:not([data-theme="light"]) .c-pink>circle{fill:#72243E;stroke:#ED93B1}
+:root:not([data-theme="light"]) .c-pink>text{fill:#F4C0D1}
+:root:not([data-theme="light"]) .c-teal>rect,:root:not([data-theme="light"]) .c-teal>circle{fill:#085041;stroke:#5DCAA5}
+:root:not([data-theme="light"]) .c-teal>text{fill:#9FE1CB}
+:root:not([data-theme="light"]) .c-purple>rect,:root:not([data-theme="light"]) .c-purple>circle{fill:#3C3489;stroke:#AFA9EC}
+:root:not([data-theme="light"]) .c-purple>text{fill:#CECBF6}
+:root:not([data-theme="light"]) .c-coral>rect,:root:not([data-theme="light"]) .c-coral>circle{fill:#712B13;stroke:#F0997B}
+:root:not([data-theme="light"]) .c-coral>text{fill:#F5C4B3}}
+:root[data-theme="dark"] .c-gray>rect,:root[data-theme="dark"] .c-gray>circle{fill:#444441;stroke:#B4B2A9}
+:root[data-theme="dark"] .c-gray>text{fill:#D3D1C7}
+:root[data-theme="dark"] .c-amber>rect,:root[data-theme="dark"] .c-amber>circle{fill:#633806;stroke:#EF9F27}
+:root[data-theme="dark"] .c-amber>text{fill:#FAC775}
+:root[data-theme="dark"] .c-red>rect,:root[data-theme="dark"] .c-red>circle{fill:#791F1F;stroke:#F09595}
+:root[data-theme="dark"] .c-red>text{fill:#F7C1C1}
+:root[data-theme="dark"] .c-blue>rect,:root[data-theme="dark"] .c-blue>circle{fill:#0C447C;stroke:#85B7EB}
+:root[data-theme="dark"] .c-blue>text{fill:#B5D4F4}
+:root[data-theme="dark"] .c-green>rect,:root[data-theme="dark"] .c-green>circle{fill:#27500A;stroke:#97C459}
+:root[data-theme="dark"] .c-green>text{fill:#C0DD97}
+:root[data-theme="dark"] .c-pink>rect,:root[data-theme="dark"] .c-pink>circle{fill:#72243E;stroke:#ED93B1}
+:root[data-theme="dark"] .c-pink>text{fill:#F4C0D1}
+:root[data-theme="dark"] .c-teal>rect,:root[data-theme="dark"] .c-teal>circle{fill:#085041;stroke:#5DCAA5}
+:root[data-theme="dark"] .c-teal>text{fill:#9FE1CB}
+:root[data-theme="dark"] .c-purple>rect,:root[data-theme="dark"] .c-purple>circle{fill:#3C3489;stroke:#AFA9EC}
+:root[data-theme="dark"] .c-purple>text{fill:#CECBF6}
+:root[data-theme="dark"] .c-coral>rect,:root[data-theme="dark"] .c-coral>circle{fill:#712B13;stroke:#F0997B}
+:root[data-theme="dark"] .c-coral>text{fill:#F5C4B3}
+
+<style>#sec-a1 .pg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+#sec-a1 .pg span{font-size:12px;padding:3px 9px;border-radius:var(--radius);border:0.5px solid var(--border);color:var(--text-secondary);cursor:pointer}
+#sec-a1 .pg span.dn{color:var(--text-primary)}
+#sec-a1 .pg span.cu{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+#sec-a1 .box{background:var(--surface-1);border-radius:12px;padding:12px 16px;margin-bottom:10px}
+#sec-a1 .h{font-size:13px;font-weight:500;margin-bottom:6px}
+#sec-a1 .sc{font-size:13px;color:var(--text-accent);background:var(--bg-accent);border-radius:var(--radius);padding:6px 10px;margin-bottom:10px}
+#sec-a1 .rq{font-size:13px;padding:3px 0 3px 14px;position:relative;opacity:0;transition:opacity .3s}
+#sec-a1 .rq:before{content:"";position:absolute;left:2px;top:11px;width:5px;height:5px;border-radius:50%;background:var(--text-muted)}
+#sec-a1 .hd{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.1fr);gap:10px;font-size:12px;color:var(--text-muted);padding-bottom:4px;border-bottom:0.5px solid var(--border)}
+#sec-a1 .row{display:grid;grid-template-columns:150px minmax(0,1fr) minmax(0,1.1fr);gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px;opacity:0;transform:translateY(5px);transition:opacity .3s,transform .3s}
+#sec-a1 .in{opacity:1!important;transform:none!important}
+#sec-a1 .mono{font-family:var(--font-mono);font-size:12px;word-break:break-word}
+#sec-a1 .wh{font-size:12px;color:var(--text-secondary);line-height:1.5}</style>
+<style>#sec-a2 .pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+#sec-a2 .lb{font-size:12px;color:var(--text-muted);min-width:110px}
+#sec-a2 .pills button{font-size:12px;padding:3px 9px}
+#sec-a2 .pills button.on{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+#sec-a2 .pills button.dn{color:var(--text-success)}
+#sec-a2 .frm{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:12px 16px;margin-top:10px}
+#sec-a2 .sc{font-size:13px;background:var(--bg-accent);color:var(--text-accent);border-radius:var(--radius);padding:8px 10px;margin-top:8px;line-height:1.5}
+#sec-a2 .sec{font-size:12px;font-weight:500;color:var(--text-accent);margin:12px 0 4px;opacity:0;transition:opacity .3s}
+#sec-a2 .fld{display:grid;grid-template-columns:190px minmax(0,1fr);gap:10px;padding:5px 0;opacity:0;transform:translateY(4px);transition:opacity .25s,transform .25s}
+#sec-a2 .in{opacity:1!important;transform:none!important}
+#sec-a2 .inp{font-family:var(--font-mono);font-size:12px;border:0.5px solid var(--border-strong);border-radius:var(--radius);padding:5px 8px;min-height:28px;background:var(--surface-1);word-break:break-word}
+#sec-a2 .hint{font-size:12px;color:var(--text-muted);margin-top:2px}
+#sec-a2 .tg{font-size:11px;padding:1px 6px;border-radius:var(--radius);display:inline-block;margin-top:3px}
+#sec-a2 .O{background:var(--bg-success);color:var(--text-success)}
+#sec-a2 .Y{background:var(--bg-accent);color:var(--text-accent)}
+#sec-a2 .P{background:var(--bg-warning);color:var(--text-warning)}
+#sec-a2 .C{background:var(--bg-danger);color:var(--text-danger)}
+#sec-a2 .bdg{display:inline-block;font-size:12px;padding:2px 8px;border-radius:var(--radius)}</style>
+<style>#sec-a3 .e{stroke:var(--border-strong);stroke-width:1.5;fill:none;transition:stroke .3s}
+#sec-a3 .e.on{stroke:#1D9E75;stroke-width:2.5}
+#sec-a3 .nd{transition:opacity .3s}
+#sec-a3 .nd.dim{opacity:.35}
+#sec-a3 .tk{font-family:var(--font-mono);font-size:12px;line-height:1.65;word-break:break-word}
+#sec-a3 .chg{color:var(--text-success);font-weight:500}
+#sec-a3 .cd{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px;flex:1 1 190px;min-width:0}
+#sec-a3 .hd{font-size:12px;color:var(--text-secondary);margin-bottom:4px}
+#sec-a3 .bdg{display:inline-block;font-size:12px;padding:2px 8px;border-radius:var(--radius)}
+#sec-a3 .sb button{font-size:12px;padding:3px 9px}
+#sec-a3 .sb button.on{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}</style>
+<style>#sec-a4 .sb button{font-size:12px;padding:3px 9px}
+#sec-a4 .sb button.on{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+#sec-a4 .lg{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text-secondary);margin:6px 0}
+#sec-a4 .lg span{display:inline-flex;align-items:center;gap:5px}
+#sec-a4 .lg i.sw{width:10px;height:10px;border-radius:3px;display:inline-block}
+#sec-a4 .lv{display:flex;gap:4px;margin:8px 0}
+#sec-a4 .lv div{flex:1;font-size:11px;text-align:center;padding:4px 2px;border-radius:var(--radius);background:var(--surface-1);color:var(--text-muted);transition:all .3s}
+#sec-a4 .lv div.on{background:var(--bg-warning);color:var(--text-warning)}
+#sec-a4 .lv div.max{background:var(--bg-danger);color:var(--text-danger);font-weight:500}
+#sec-a4 .tl{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px}
+#sec-a4 .tl button{flex:0 0 auto;font-size:11px;padding:4px 8px;display:flex;align-items:center;gap:5px;opacity:.45}
+#sec-a4 .tl button.past{opacity:1}
+#sec-a4 .tl button.cur{opacity:1;outline:2px solid var(--border-accent)}
+#sec-a4 .tl i.d{width:8px;height:8px;border-radius:50%;display:inline-block}
+#sec-a4 .card{background:var(--surface-1);border-radius:12px;padding:12px 16px;font-size:13px;line-height:1.55}
+#sec-a4 .kv{display:grid;grid-template-columns:120px minmax(0,1fr);gap:8px;padding:2px 0}
+#sec-a4 .rec{color:var(--text-success)}
+#sec-a4 .lane{transition:opacity .3s}</style>
+<style>#sec-a5 .e{stroke:var(--border-strong);stroke-width:1.5;fill:none;transition:stroke .3s}
+#sec-a5 .e.on{stroke:#1D9E75;stroke-width:2.5}
+#sec-a5 .nd{transition:opacity .3s}
+#sec-a5 .nd.dim{opacity:.35}
+#sec-a5 .sb button{font-size:12px;padding:3px 9px}
+#sec-a5 .sb button.on{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+#sec-a5 .cmp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0}
+#sec-a5 .cmp div{background:var(--surface-1);border-radius:var(--radius);padding:8px 10px;font-size:12px}
+#sec-a5 .cmp b{display:block;font-weight:500;font-size:12px;color:var(--text-secondary);margin-bottom:2px}
+#sec-a5 .tk{font-family:var(--font-mono);font-size:12px;line-height:1.65;word-break:break-word}
+#sec-a5 .cd{background:var(--surface-1);border-radius:var(--radius);padding:10px 12px}
+#sec-a5 .bdg{display:inline-block;font-size:12px;padding:2px 8px;border-radius:var(--radius)}</style>
+</style>
+</head>
+<body>
+<header class="top">
+<h1>AI agent platform: identity, access, cost and kill switch</h1>
+<p>Okta as the identity provider, TrueFoundry as the AI gateway (agent registry and MCP gateway), agents 1–3 with self-hosted and SaaS MCP servers. Agent-1 and agent-2 belong to team-1, agent-3 to team-2; every agent has one identity and all its token cost goes to its owner team.</p>
+<p>Each animation is interactive: use its own Play, Next and selector buttons. Values such as client IDs and URLs are examples.</p>
+</header>
+<nav class="toc" aria-label="Contents"><div><a href="#animation-1">Animation 1</a><a href="#animation-2">Animation 2</a><a href="#animation-3">Animation 3</a><a href="#animation-4">Animation 4</a><a href="#animation-5">Animation 5</a><a href="#key-takeaways">Key takeaways</a></div></nav>
+<main>
+<section class="part" id="animation-1"><div class="eyebrow">Animation 1</div><h2>Okta setup: what the Okta team creates and hands back</h2><p class="lede">For each step: the request to the Okta team, then each value they return and exactly where it is entered. Steps 1–7 cover your own agents and MCPs; step 8 covers SaaS MCP scenarios.</p><div class="widget" id="sec-a1">
+<div class="pg" id="pg"></div>
+<div style="font-weight:500;font-size:16px;margin-bottom:8px" id="tt"></div>
+<div id="sc"></div>
+<div class="box"><div class="h">Your request to the Okta team</div><div id="rq"></div></div>
+<div class="box"><div class="h">What they hand back, and where you enter it</div><div class="hd"><div>Item</div><div>Value</div><div>Where you enter it</div></div><div id="rt"></div></div>
+<div style="display:flex;align-items:center;gap:8px">
+<button id="pv" aria-label="Previous step"><span aria-hidden="true">←</span></button>
+<button id="pl"><span aria-hidden="true">▶</span> Play</button>
+<button id="nx" aria-label="Next step"><span aria-hidden="true">→</span></button>
+<span id="ct" style="font-size:13px;color:var(--text-secondary);margin-left:6px"></span>
+</div>
+
+</div></section>
+<section class="part" id="animation-2"><div class="eyebrow">Animation 2</div><h2>TrueFoundry UI setup, screen by screen, plus the developer kit</h2><p class="lede">Each screen is a TrueFoundry form, filled in field by field. Tags show where each value comes from: an Okta step, your choice, the platform team or vendor admin, or something developers must implement in code. MCP screens begin with their scenario.</p><div class="widget" id="sec-a2">
+<div id="sel"></div>
+<div class="frm">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap"><div><div id="ttl" style="font-weight:500;font-size:15px"></div><div id="pth" style="font-size:12px;color:var(--text-secondary)"></div></div><span id="flow" class="bdg"></span></div>
+<div id="scn"></div>
+<div id="body"></div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+<button id="pv" aria-label="Previous screen"><span aria-hidden="true">←</span></button>
+<button id="pl"><span aria-hidden="true">▶</span> Play all</button>
+<button id="nx" aria-label="Next screen"><span aria-hidden="true">→</span></button>
+<span id="ct" style="font-size:13px;color:var(--text-secondary);margin-left:6px"></span>
+</div>
+
+</div></section>
+<section class="part" id="animation-3"><div class="eyebrow">Animation 3</div><h2>One request at runtime, per MCP scenario</h2><p class="lede">Pick a scenario and press Play. The badge names the flow used at each hop; the cards show the credential the next hop receives, the agent token, and the cost ledger charged to the agent's owner team. The user, Priya, is in ai-users-team-2.</p><div class="widget" id="sec-a3">
+<div class="sb" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:6px"><span style="font-size:12px;color:var(--text-muted)">Scenario</span><button data-s="m3">Self-hosted MCP 3</button><button data-s="at">Atlassian (per-user OAuth)</button><button data-s="mg">MongoDB (team account)</button><button data-s="gr">Grafana (team-level OAuth)</button></div>
+<div id="scd" style="font-size:13px;color:var(--text-secondary);margin-bottom:4px"></div>
+<svg width="100%" viewBox="0 0 680 390" role="img"><title>Request path</title><desc>Web UI, Okta, TrueFoundry gateway, LLM provider, orchestrator, agent, MCP server and data.</desc>
+<line id="e-ui-okta" class="e" x1="105" y1="53" x2="575" y2="53"/>
+<line id="e-ui-gw" class="e" x1="105" y1="53" x2="340" y2="153"/>
+<line id="e-gw-okta" class="e" x1="340" y1="153" x2="575" y2="53"/>
+<line id="e-gw-llm" class="e" x1="340" y1="153" x2="585" y2="153"/>
+<line id="e-gw-orch" class="e" x1="340" y1="153" x2="110" y2="263"/>
+<line id="e-gw-ag" class="e" x1="340" y1="153" x2="340" y2="263"/>
+<line id="e-gw-mcp" class="e" x1="340" y1="153" x2="570" y2="263"/>
+<line id="e-mcp-data" class="e" x1="570" y1="263" x2="570" y2="353"/>
+<g id="n-ui" class="nd"><rect class="box" x="40" y="30" width="130" height="46" rx="8" stroke-width="0.5"/><text class="th" x="105" y="53" text-anchor="middle" dominant-baseline="central">Web UI</text></g>
+<g id="n-okta" class="nd c-purple"><rect x="510" y="30" width="130" height="46" rx="8" stroke-width="0.5"/><text class="th" x="575" y="53" text-anchor="middle" dominant-baseline="central">Okta</text></g>
+<g id="n-gw" class="nd c-teal"><rect x="200" y="130" width="280" height="46" rx="8" stroke-width="0.5"/><text class="th" x="340" y="153" text-anchor="middle" dominant-baseline="central">TrueFoundry gateway</text></g>
+<g id="n-llm" class="nd c-purple"><rect x="520" y="130" width="130" height="46" rx="8" stroke-width="0.5"/><text class="th" x="585" y="153" text-anchor="middle" dominant-baseline="central">LLM provider</text></g>
+<g id="n-orch" class="nd c-teal"><rect x="40" y="240" width="140" height="46" rx="8" stroke-width="0.5"/><text class="th" x="110" y="263" text-anchor="middle" dominant-baseline="central">Orchestrator</text></g>
+<g id="n-ag" class="nd c-teal"><rect x="270" y="240" width="140" height="46" rx="8" stroke-width="0.5"/><text id="t-ag" class="th" x="340" y="263" text-anchor="middle" dominant-baseline="central">Agent</text></g>
+<g id="n-mcp" class="nd c-coral"><rect x="500" y="240" width="140" height="46" rx="8" stroke-width="0.5"/><text id="t-mcp" class="th" x="570" y="263" text-anchor="middle" dominant-baseline="central">MCP</text></g>
+<g id="n-data" class="nd"><rect class="box" x="500" y="330" width="140" height="46" rx="8" stroke-width="0.5"/><text id="t-data" class="th" x="570" y="353" text-anchor="middle" dominant-baseline="central">Data</text></g>
+<circle id="dot" r="7" fill="#EF9F27" opacity="0" cx="105" cy="53"/>
+</svg>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0 4px"><span id="bdg" class="bdg"></span><span id="cnt" style="font-size:13px;color:var(--text-secondary)"></span></div>
+<p id="cap" style="font-size:15px;margin:4px 0 12px;min-height:50px"></p>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<div class="cd"><div class="hd">Credential the next hop receives</div><div id="ut" class="tk"></div></div>
+<div class="cd"><div class="hd">Agent token (x-tfy-agent-authorization)</div><div id="at" class="tk"></div></div>
+<div class="cd"><div class="hd">Cost ledger (charged to agent's owner team)</div><div id="lg" class="tk"></div></div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:12px">
+<button id="prev" aria-label="Previous step"><span aria-hidden="true">←</span></button>
+<button id="play"><span aria-hidden="true">▶</span> Play</button>
+<button id="next" aria-label="Next step"><span aria-hidden="true">→</span></button>
+</div>
+
+</div></section>
+<section class="part" id="animation-4"><div class="eyebrow">Animation 4</div><h2>Kill switch: how each layer detects and responds to an incident</h2><p class="lede">Pick an incident to play its response. Each layer shows how it detects the breach, the timed actions taken there, who acts, who is notified and the recommended action. Use Show all to see the full response at once.</p><div class="widget" id="sec-a4">
+<div class="sb" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Incident</span><button data-s="inj">Prompt injection exfiltration</button><button data-s="key">Agent key leaked</button><button data-s="loop">Runaway cost loop</button><button data-s="saas">SaaS vendor breach</button><button data-s="team">Team-wide stop</button><button data-s="all">Global emergency stop</button></div>
+<div id="desc" style="font-size:13px;color:var(--text-secondary);margin:8px 0 0"></div>
+<svg width="100%" viewBox="0 0 680 240" role="img"><title>Layers along the request path</title><desc>Seven layers from left to right: Okta, network, gateway access, gateway policy, agent runtime, tools, SaaS and data, with a people band below. Colours change as each layer detects or acts on the incident.</desc>
+<g id="lanes"></g>
+<g id="fd" class="c-amber" style="opacity:0;transition:transform .4s,opacity .3s"><rect x="0" y="0" width="84" height="20" rx="10" stroke-width="0.5"/><text class="ts" x="42" y="10" text-anchor="middle" dominant-baseline="central">1st detected</text></g>
+<g id="og" class="c-pink" style="opacity:0;transition:transform .4s,opacity .3s"><rect x="0" y="0" width="84" height="20" rx="10" stroke-width="0.5"/><text class="ts" x="42" y="10" text-anchor="middle" dominant-baseline="central">Origin</text></g>
+<circle id="dot" r="7" fill="#534AB7" opacity="0" cx="0" cy="0"/>
+</svg>
+<div class="lg"><span><i class="sw" style="background:#D4537E"></i>Origin</span><span><i class="sw" style="background:#EF9F27"></i>Detected</span><span><i class="sw" style="background:#1D9E75"></i>Automatic control</span><span><i class="sw" style="background:#E24B4A"></i>Manual action</span><span><i class="sw" style="background:#378ADD"></i>Notified</span><span><i class="sw" style="background:#639922"></i>Recovered</span><span><i class="sw" style="background:#B4B2A9"></i>Not involved</span><span>Number on a box = actions so far</span></div>
+<div class="lv" id="lv"></div>
+<div class="tl" id="tl"></div>
+<div class="card" id="card"></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+<button id="pv" aria-label="Previous step"><span aria-hidden="true">←</span></button>
+<button id="pl"><span aria-hidden="true">▶</span> Play</button>
+<button id="nx" aria-label="Next step"><span aria-hidden="true">→</span></button>
+<button id="all"><span aria-hidden="true">☰</span> Show all</button>
+<button id="rs"><span aria-hidden="true">↻</span> Replay</button>
+<span id="ct" style="font-size:13px;color:var(--text-secondary)"></span>
+</div>
+
+</div></section>
+<section class="part" id="animation-5"><div class="eyebrow">Animation 5</div><h2>XAA and ID-JAG compared with per-user OAuth and a shared account</h2><p class="lede">The same Atlassian call under three modes. The comparison grid shows who decides access, consent, what the vendor sees, what the gateway stores, revocation and prerequisites.</p><div class="widget" id="sec-a5">
+<div class="sb" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><span style="font-size:12px;color:var(--text-muted)">Mode</span><button data-m="x">XAA / ID-JAG</button><button data-m="o">Per-user OAuth (3LO)</button><button data-m="s">Shared account (2LO)</button></div>
+<div class="cmp" id="cmp"></div>
+<svg width="100%" viewBox="0 0 680 310" role="img"><title>Atlassian call path</title><desc>Priya's web UI, Okta, TrueFoundry gateway, agent-1, Atlassian authorization server and Atlassian MCP.</desc>
+<line id="e-ui-okta" class="e" x1="105" y1="53" x2="575" y2="53"/>
+<line id="e-ui-gw" class="e" x1="105" y1="53" x2="340" y2="153"/>
+<line id="e-gw-okta" class="e" x1="340" y1="153" x2="575" y2="53"/>
+<line id="e-gw-ag" class="e" x1="340" y1="153" x2="110" y2="263"/>
+<line id="e-gw-as" class="e" x1="340" y1="153" x2="345" y2="263"/>
+<line id="e-gw-mcp" class="e" x1="340" y1="153" x2="570" y2="263"/>
+<path id="e-ui-as" class="e" d="M105 53 L105 205 L250 205 L345 263"/>
+<g id="n-ui" class="nd"><rect class="box" x="40" y="30" width="130" height="46" rx="8" stroke-width="0.5"/><text class="th" x="105" y="53" text-anchor="middle" dominant-baseline="central">Priya / UI</text></g>
+<g id="n-okta" class="nd c-purple"><rect x="510" y="30" width="130" height="46" rx="8" stroke-width="0.5"/><text class="th" x="575" y="53" text-anchor="middle" dominant-baseline="central">Okta</text></g>
+<g id="n-gw" class="nd c-teal"><rect x="200" y="130" width="280" height="46" rx="8" stroke-width="0.5"/><text class="th" x="340" y="153" text-anchor="middle" dominant-baseline="central">TrueFoundry gateway</text></g>
+<g id="n-ag" class="nd c-teal"><rect x="40" y="240" width="140" height="46" rx="8" stroke-width="0.5"/><text class="th" x="110" y="263" text-anchor="middle" dominant-baseline="central">agent-1</text></g>
+<g id="n-as" class="nd c-coral"><rect x="270" y="240" width="150" height="46" rx="8" stroke-width="0.5"/><text class="th" x="345" y="263" text-anchor="middle" dominant-baseline="central">Atlassian auth</text></g>
+<g id="n-mcp" class="nd c-coral"><rect x="500" y="240" width="140" height="46" rx="8" stroke-width="0.5"/><text class="th" x="570" y="263" text-anchor="middle" dominant-baseline="central">Atlassian MCP</text></g>
+<circle id="dot" r="7" fill="#EF9F27" opacity="0" cx="105" cy="53"/>
+</svg>
+<div style="display:flex;align-items:center;gap:10px;margin:6px 0 4px"><span id="bdg" class="bdg"></span><span id="cnt" style="font-size:13px;color:var(--text-secondary)"></span></div>
+<p id="cap" style="font-size:15px;margin:4px 0 10px;min-height:50px"></p>
+<div class="cd"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px" id="kh"></div><div id="kt" class="tk"></div></div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:12px">
+<button id="prev" aria-label="Previous step"><span aria-hidden="true">←</span></button>
+<button id="play"><span aria-hidden="true">▶</span> Play</button>
+<button id="next" aria-label="Next step"><span aria-hidden="true">→</span></button>
+</div>
+
+</div></section>
+<section class="part" id="key-takeaways"><div class="eyebrow">Summary</div><h2>Key takeaways</h2><div class="prose"><h3>1. Which OAuth flow each hop uses</h3>
+<ul>
+<li><b>3LO (three-legged OAuth):</b> a user is present and signs in or approves access.</li>
+<li><b>2LO (two-legged OAuth, client credentials):</b> a machine authenticates as itself, with no user.</li>
+<li><b>OBO (on-behalf-of token exchange):</b> the gateway swaps the user's token for a narrower one, keeping the user as <code>sub</code>.</li>
+</ul>
+<table>
+<tr><th>Hop</th><th>Flow</th><th>Why</th></tr>
+<tr><td>User signs in to the UI</td><td>3LO: OIDC authorization code + PKCE</td><td>A user is present</td></tr>
+<tr><td>Each agent gets its identity token</td><td>2LO: client credentials, private key JWT</td><td>Proves which agent is calling; never which user</td></tr>
+<tr><td>UI → orchestrator → agent → self-hosted MCP 1–3</td><td>OBO, performed by the gateway</td><td>Carries the user forward with a narrower scope at each hop</td></tr>
+<tr><td>Agent → LLM (through the gateway)</td><td>2LO agent token only; the gateway calls the provider with its own key</td><td>Cost belongs to the agent and its owner team, whoever the user is</td></tr>
+<tr><td>Agent → Atlassian, DataHub, Grafana Cloud</td><td>3LO per user, approved once in the UI; gateway stores the token</td><td>The vendor enforces the user's own permissions</td></tr>
+<tr><td>Agent → MongoDB (one service account per team)</td><td>2LO / shared credential per team</td><td>Team-level access; the gateway logs which user asked</td></tr>
+</table>
+<p class="note">Changed from earlier drafts: LLM calls no longer carry the user's token. Cost is charged to the agent's owner team.</p>
+
+<h3>2. Cost and token accounting</h3>
+<ul>
+<li>Every agent has exactly one identity (1:1) and one owner team: agent-1 and agent-2 → team-1, agent-3 → team-2, orchestrator → team-platform.</li>
+<li>Agents call models with only their own agent token and a fixed <code>X-TFY-METADATA</code> header such as <code>{"team":"team-1","agent":"agent-1","session_id":"…"}</code>.</li>
+<li>Budget rules match on <code>metadata.team</code> (per team) and <code>metadata.agent</code> (per agent). Tracking counts against every matching rule; the first matching rule decides allow or block.</li>
+<li>Rate limits per <code>metadata.agent</code> are the first defence against runaway loops.</li>
+<li>Metadata is set by agent code from config, never from user input or model output. Monthly, compare metadata against the agent identity recorded in gateway traces.</li>
+<li>Keep metadata keys short and consistent; values are capped at 128 characters, and custom identifiers belong inside <code>X-TFY-METADATA</code>, not separate headers.</li>
+</ul>
+
+<h3>3. MCP access by scenario</h3>
+<table>
+<tr><th>MCP</th><th>Gateway → MCP auth</th><th>Limiting tools</th><th>Limiting data</th></tr>
+<tr><td>mcp-1 (self-hosted, all tools, all data)</td><td>OBO (audit shows the user)</td><td>Not needed</td><td>Not needed</td></tr>
+<tr><td>mcp-2 (self-hosted, all tools, team data)</td><td>OBO</td><td>Not needed</td><td>Server filters by <code>sub</code> and <code>groups</code></td></tr>
+<tr><td>mcp-3 (self-hosted, team tools and data)</td><td>OBO</td><td>Team-only collaborators + Virtual MCP Server per team</td><td>Server filters by <code>groups</code></td></tr>
+<tr><td>Atlassian (SaaS, per-user OAuth)</td><td>3LO per user (XAA candidate)</td><td>Collaborators</td><td>Atlassian permissions of the user</td></tr>
+<tr><td>Grafana (SaaS, team-level)</td><td>3LO on Grafana Cloud; else one OSS server per team (2LO)</td><td>Collaborators</td><td>Grafana teams synced from Okta groups</td></tr>
+<tr><td>DataHub (SaaS, team + user)</td><td>3LO per user, or per-user PAT via Auth Overrides</td><td>Collaborators</td><td>DataHub policies. Never a shared token</td></tr>
+<tr><td>MongoDB (team service accounts)</td><td>Option A: one stock server per team, shared key, <code>--readOnly</code>. Option B: one custom server, OBO, scope <code>mongo.tools</code></td><td>Collaborators per team</td><td>Team DB user roles enforced by MongoDB; see section 9</td></tr>
+</table>
+
+<h3>4. Filtering data by team inside an MCP server</h3>
+<p><b>Key rule:</b> the team always comes from the validated token, never from tool arguments. The model fills in arguments, so a prompt must not be able to widen access.</p>
+<ol>
+<li><b>Validate the token:</b> signature against Okta JWKS, <code>iss</code>, <code>aud</code>, <code>exp</code>, and the server's scope (e.g. <code>mcp3.tools</code>).</li>
+<li><b>Build a caller context:</b> <code>user = sub</code>, <code>teams = groups</code> (only <code>ai-users-*</code>).</li>
+<li><b>Apply it to every data access</b>, ideally with database row-level security so a missed WHERE clause cannot leak.</li>
+<li><b>Deny by default:</b> no team claim means no rows.</li>
+</ol>
+<p><b>Common mistakes:</b></p>
+<ul>
+<li><b>Groups claim missing or too large:</b> filter the claim in Okta (starts with "ai-users-").</li>
+<li><b>Stale membership:</b> keep access tokens short (10 minutes).</li>
+<li><b>Caching:</b> include the team set in every cache key.</li>
+<li><b>Leaky results:</b> errors and counts such as "3 of 40 hidden" reveal data; return only what the caller may see.</li>
+<li><b>Users in several teams:</b> decide between the union of their teams' data (simpler) and one team per session (safer).</li>
+<li><b>mcp-3:</b> re-check on the server that the tool is allowed for the caller's team, even though the Virtual MCP already hides it.</li>
+</ul>
+
+<h3>5. SaaS MCP notes</h3>
+<ul>
+<li><b>Atlassian:</b> per-user OAuth respects each user's own Atlassian permissions. Confirm Atlassian will accept the TrueFoundry gateway as an OAuth client and that an admin allows your gateway's domain.</li>
+<li><b>Grafana:</b> Grafana Cloud MCP is user-scoped by Grafana RBAC; the self-run open-source server is scoped to whatever service account it uses.</li>
+<li><b>DataHub:</b> DataHub's guidance is never to share one token across users; use OAuth or individual credentials.</li>
+<li><b>MongoDB:</b> team service accounts give team-level, not user-level, control. MongoDB sees only the team DB user; gateway traces record the person. MongoDB now also offers a hosted, per-user MCP server (section 9).</li>
+<li>Confirm with TrueFoundry that when an agent calls on a user's behalf, the gateway uses the 3LO token that user approved earlier.</li>
+</ul>
+
+<h3>6. XAA and ID-JAG</h3>
+<ul>
+<li><b>ID-JAG</b> is the IETF draft grant; <b>XAA</b> (Cross App Access) is Okta's product name; <b>Enterprise-Managed Authorization</b> is the MCP extension built on it.</li>
+<li>The MCP extension went stable in June 2026. Atlassian is among the listed supporting servers; Grafana, DataHub and MongoDB are not yet confirmed.</li>
+<li>The vendor's authorization server must accept the ID-JAG grant and trust your Okta org as an issuer.</li>
+<li>TrueFoundry's MCP form already offers an "ID-JAG (XAA)" grant type, so moving Atlassian is a one-screen change once Okta and Atlassian are set up.</li>
+<li>Benefits over 3LO: no consent prompts, IT policy decides access, revocation in one place, no long-lived user tokens stored in the gateway.</li>
+<li>Agent-to-agent ID-JAG needs the separate Okta for AI Agents product; MCP hops don't.</li>
+</ul>
+
+<h3>7. Kill switch</h3>
+<ul>
+<li>Deactivating an app or user in Okta stops <b>new</b> tokens; tokens already issued stay valid until they expire. Hence 10-minute access tokens.</li>
+<li>Okta's agent kill switch is manual today. Automatic layers are yours: gateway rate limits, budgets and guardrails, plus step and token caps in agent code.</li>
+<li>Removing an agent or MCP in the TrueFoundry gateway is the instant layer: the next call gets 403.</li>
+<li>Agents must treat 401/403 as "stop", back off on 429 and budget errors, and report themselves offline. This is a go-live requirement.</li>
+<li>Severity ladder: L1 throttle → L2 contain → L3 suspend agent → L4 isolate team → L5 global stop. Name who may trigger L4 and L5.</li>
+</ul>
+
+<h3>8. Check before you build</h3>
+<ol>
+<li>Atlassian accepts the gateway as an OAuth client (or supports XAA for your tenant).</li>
+<li>3LO tokens stored per user are used when an agent acts on that user's behalf.</li>
+<li>Agent identity is beta in TrueFoundry: pin a version and test the full chain.</li>
+<li>Okta API Access Management is licensed (required for token exchange).</li>
+<li>Grafana Cloud or self-managed? This decides per-user OAuth vs per-team service accounts.</li>
+</ol>
+
+<h3>9. MongoDB: choosing the setup</h3>
+<p>A MongoDB database can have many users, each with its own roles. Team service accounts are a design choice: an agent behind the gateway cannot sign in to MongoDB as each individual user, so one read-only database user per team is the practical boundary.</p>
+<table>
+<tr><th>Option</th><th>What MongoDB sees</th><th>Scoping</th><th>What you run</th><th>When to use</th></tr>
+<tr><td><b>A.</b> One stock MongoDB MCP server per team (current)</td><td>The team account, e.g. <code>svc-team-2</code></td><td>Database, collection or view, enforced by MongoDB</td><td>One server per team; registered as <code>mongodb-team-1</code>, <code>mongodb-team-2</code> with API Key (Shared)</td><td>Few teams; simplest to run and audit</td></tr>
+<tr><td><b>B.</b> One custom MCP server with one connection per team</td><td>The team account chosen from the user's <code>groups</code> claim</td><td>Same as A, enforced by MongoDB per connection</td><td>One custom server you maintain; registered once as <code>mongodb</code> with OBO, scope <code>mongo.tools</code></td><td>More than 4–5 teams, or one registration wanted</td></tr>
+<tr><td><b>C.</b> One server, one broad account, filtering in code</td><td>One account that can read everything</td><td>Your code only</td><td>One server</td><td>Avoid: one bug or prompt injection exposes every team</td></tr>
+<tr><td><b>Hosted.</b> MongoDB Atlas Managed MCP Server (GA August 2026)</td><td>The individual user who approved access</td><td>The user's own Atlas permissions; likely per Atlas project (not confirmed)</td><td>Nothing; MongoDB hosts it</td><td>If MongoDB confirms it works behind TrueFoundry</td></tr>
+</table>
+<p><b>Option B build steps</b> (starter <code>server.py</code> provided separately):</p>
+<ol>
+<li><b>MongoDB:</b> keep one read-only DB user per team with access only to its database or views; for shared collections, give each team a filtered view; allow only the MCP pods to reach the cluster.</li>
+<li><b>Okta:</b> add scope <code>mongo.tools</code> to the <code>gateway-obo</code> rule; the <code>groups</code> claim already exists.</li>
+<li><b>Server:</b> validate the token (signature, issuer, audience, <code>mongo.tools</code>); take the team from <code>groups</code>, never from tool arguments; use that team's own connection; read-only tools only (list collections, find, aggregate, count); 200-document cap, 5-second timeout, block <code>$out</code>, <code>$merge</code>, <code>$function</code>, <code>$where</code>; log user, team, tool and collection, never tokens. Pin the Python MCP SDK to 1.x.</li>
+<li><b>Deploy:</b> container in your cluster; per-team connection strings from the secret store; network policy so only the gateway can call it.</li>
+<li><b>TrueFoundry:</b> register <code>mongodb</code> (OAuth2, Okta, token exchange, scope <code>mongo.tools</code>); collaborators <code>agent:agent-2</code>, <code>agent:agent-3</code>, <code>ai-users-team-1</code>, <code>ai-users-team-2</code>; remove the per-team servers after testing.</li>
+<li><b>Test:</b> team-1 user sees only team-1 data; asking for team-2 is refused; token without <code>mongo.tools</code> gets 401; <code>$out</code> rejected; locking <code>svc-team-2</code> stops only team-2.</li>
+<li><b>Kill switch:</b> lock one team's DB user to stop that team, or disable <code>mongodb</code> in the gateway to stop all.</li>
+</ol>
+<p><b>Hosted server: how access would work.</b> Each user approves once and the server acts as that user, so there are no team service accounts. What the user can reach depends on their Atlas permissions:</p>
+<ul>
+<li><b>Atlas organization/project roles</b> (e.g. Project Data Access Read Only) cover a whole project: every cluster and database in it.</li>
+<li><b>Database users with custom roles</b> can be scoped down to collections or views.</li>
+<li>MongoDB has not said which of the two the hosted server uses. If it is project roles, put each team's data in its own Atlas project (<code>ai-team-1</code>, <code>ai-team-2</code>), map Okta groups to read-only roles on their team's project only, and turn on read-only mode for the hosted server.</li>
+</ul>
+<table>
+<tr><th></th><th>Hosted server</th><th>Option A or B</th></tr>
+<tr><td>Who MongoDB sees</td><td>The individual user</td><td>The team account</td></tr>
+<tr><td>Scoping</td><td>User's Atlas roles (likely per project)</td><td>Team account (database, collection or view)</td></tr>
+<tr><td>Per-user audit in MongoDB</td><td>Yes</td><td>No; gateway traces only</td></tr>
+<tr><td>Revocation</td><td>Remove the user from the Okta group or revoke their approval</td><td>Lock the team account (whole team)</td></tr>
+<tr><td>What you run</td><td>Nothing</td><td>Your own MCP server(s)</td></tr>
+</table>
+<p><b>Ask MongoDB before choosing the hosted server:</b></p>
+<ol>
+<li>Does it act with the user's Atlas project roles or with database-user roles?</li>
+<li>Can access be limited to specific databases or collections?</li>
+<li>Can TrueFoundry be registered as the OAuth client?</li>
+<li>Does an agent calling on a user's behalf through the gateway reuse that user's stored token?</li>
+</ol>
+<p class="note">Decision: stay on Option A now. Move to the hosted server if MongoDB answers yes to questions 3 and 4 and project-level scoping is acceptable; otherwise move to Option B when the number of teams grows.</p>
+</div></section>
+</main>
+<footer>
+<p>Sources: <a href="https://www.truefoundry.com/docs/agent-platform/agent-governance/scenarios/okta">TrueFoundry Okta scenarios</a> · <a href="https://www.truefoundry.com/docs/agent-platform/agent-governance/agent-registry.md">TrueFoundry Agent Registry</a> · <a href="https://truefoundry.com/docs/ai-gateway/budgetlimiting">TrueFoundry budget limiting</a> · <a href="https://support.okta.com/help/s/article/understanding-the-okta-for-ai-agents-kill-switch">Okta kill switch</a> · <a href="https://modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization">MCP Enterprise-Managed Authorization</a> · <a href="https://support.atlassian.com/atlassian-rovo-mcp-server/docs/authentication-and-authorization/">Atlassian Rovo MCP auth</a> · <a href="https://grafana.com/docs/grafana-cloud/ai-tools/mcp-servers/cloud-mcp/">Grafana Cloud MCP</a> · <a href="https://support.datahub.com/hc/en-us/articles/52983778792475-DataHub-MCP-Server-Per-User-Authentication-and-Usage-Limits-Best-Practices">DataHub MCP auth</a> · <a href="https://www.mongodb.com/docs/mcp-server/configuration/methods/">MongoDB MCP server</a> · <a href="https://www.mongodb.com/products/updates/now-ga-mongodb-atlas-managed-mcp-server/">MongoDB Atlas Managed MCP Server</a> · <a href="https://www.mongodb.com/docs/mcp-server/security/connect-with-oidc/">MongoDB MCP OIDC</a> · <a href="https://www.mongodb.com/docs/atlas/workforce-oidc/">Atlas Workforce Identity Federation</a></p>
+</footer>
+<script>(function(){const __R=document.getElementById('sec-a1');const __id=x=>__R.querySelector('#'+x);
+
+const I='https://corp.okta.com/oauth2/aus123';
+const S=[
+{n:'Auth server',t:'Step 1 · Custom authorization server',q:['Create one custom authorization server named ai-platform','Audience: api://ai-platform','Access token lifetime: 10 minutes (short lifetime = faster kill switch)'],r:[['Issuer URI',I,'TrueFoundry → Identity provider screen → Issuer. Also each self-hosted MCP server\'s token check.'],['Audience','api://ai-platform','TrueFoundry → Identity provider → Audience, and every OBO "Audience" field. MCP servers check it.'],['Token endpoint',I+'/v1/token','TrueFoundry → every OBO "Token URL" field. Agent runtime → OKTA_TOKEN_URL.'],['JWKS URI',I+'/v1/keys','TrueFoundry → Identity provider → JWKS URI. MCP servers use it to verify signatures.']]},
+{n:'Scopes',t:'Step 2 · Custom scopes',q:['agent.identity: agents prove who they are','orchestrator.invoke, agent1.invoke, agent2.invoke, agent3.invoke: gateway → agent hops','mcp1.tools, mcp2.tools, mcp3.tools: gateway → self-hosted MCP hops','No SaaS scopes here; SaaS vendors have their own'],r:[['agent.identity','1 scope','Agent runtime → OKTA_SCOPE.'],['*.invoke','orchestrator.invoke · agent1-3.invoke','TrueFoundry → each agent registration → "Scope" field (one per agent).'],['mcp*.tools','mcp1.tools · mcp2.tools · mcp3.tools','TrueFoundry → each self-hosted MCP registration → "Scope". MCP server code → required scope.']]},
+{n:'Groups claim',t:'Step 3 · Groups claim (user data access)',q:['Add claim "groups" to access tokens, filter: starts with "ai-users-"','Create groups ai-users-team-1 and ai-users-team-2, assign users','Reminder: groups control which data a user sees, not who pays'],r:[['Claim name','groups','TrueFoundry → Identity provider → Group claim. MCP 2 and 3 code → data filter.'],['Group names','ai-users-team-1, ai-users-team-2','TrueFoundry → agent and MCP "Collaborators" fields.'],['Sample token','Decoded token for a test user','Keep for testing; confirms groups appear.']]},
+{n:'UI app',t:'Step 4 · OIDC app for the web UI (user login, 3LO)',q:['Create OIDC web app ai-web-ui','Authorization code + PKCE, refresh token','Redirect URI: https://ai.corp.com/callback','Assign groups ai-users-team-1, ai-users-team-2'],r:[['Client ID','0oa-ui','Web UI configuration only. Not entered in TrueFoundry.'],['Client secret','Via vault (only if confidential app)','Web UI secret store only.']]},
+{n:'Gateway app',t:'Step 5 · API Services app for the gateway (OBO swaps)',q:['Create API Services app tf-gateway','Enable grant: Token Exchange','Client authentication: client secret'],r:[['Client ID','0oa-tfgw','TrueFoundry → every OBO "Client ID" field (agents and self-hosted MCPs).'],['Client secret','Shared via vault only','TrueFoundry → every OBO "Client secret" field.']]},
+{n:'Agent apps',t:'Step 6 · One API Services app per agent (agent identity, 2LO)',q:['Create apps: orchestrator, agent-1, agent-2, agent-3','Grant: client credentials, scope agent.identity','Client auth: private key JWT. You generate key pairs and send only public keys'],r:[['orchestrator','0oa-orch','TrueFoundry → orchestrator registration → Subject value. Agent runtime → OKTA_CLIENT_ID.'],['agent-1 (team-1)','0oa-ag1','TrueFoundry → agent-1 → Subject value. agent-1 runtime → OKTA_CLIENT_ID.'],['agent-2 (team-1)','0oa-ag2','Same, for agent-2.'],['agent-3 (team-2)','0oa-ag3','Same, for agent-3.'],['Private keys','Never sent to Okta','Agent runtime secret store only.']]},
+{n:'Policies',t:'Step 7 · Access policy rules',q:['ui-login: client 0oa-ui, auth code, scopes openid profile groups orchestrator.invoke','gateway-obo: client 0oa-tfgw, token exchange, *.invoke and mcp*.tools','agent-identity: clients 0oa-orch, 0oa-ag1-3, client credentials, agent.identity only'],r:[['Rule export','3 rules','Keep in your runbook. Nothing to enter.'],['Test tokens','One per rule','Use to test TrueFoundry and MCP servers before go-live.'],['Licence','API Access Management on','Required for token exchange (OBO).']]},
+{n:'SaaS MCPs',t:'Step 8 · SaaS MCPs: what Okta does per scenario',sc:'SaaS vendors run their own authorization servers. Okta\'s role is SSO and group sync into the vendor, not issuing MCP tokens (until XAA, see Animation 5).',q:['Atlassian (per-user OAuth): confirm Atlassian Cloud uses Okta SSO','Grafana (team-level): Okta SSO + group sync so ai-users-team-* map to Grafana teams','DataHub (team + user): Okta OIDC app for DataHub with groups claim','MongoDB (team service accounts): nothing from Okta; the DB team creates per-team DB users'],r:[['Atlassian','Okta SSO app (existing)','Nothing in TrueFoundry from Okta. Users approve Atlassian once in the UI.'],['Grafana','Group → Grafana team mapping','Grafana admin: team sync. TrueFoundry only needs Grafana\'s OAuth settings.'],['DataHub','DataHub OIDC client + groups claim','DataHub admin: SSO and group policies. TrueFoundry gets DataHub\'s OAuth settings.'],['MongoDB','None','DB team hands per-team connection strings to the platform team.']]},
+{n:'Handover sheet',t:'Step 9 · Final handover sheet',q:['One sheet; secrets go to the vault, not the sheet','Name an owner for key rotation, new agents and emergency deactivation'],r:[['Issuer / audience / token URL / JWKS',I,'TrueFoundry identity provider and OBO fields; MCP servers; agent runtime.'],['Scopes','8 scopes','TrueFoundry agent and MCP "Scope" fields; MCP code; agent runtime.'],['Groups','ai-users-team-1, -2','TrueFoundry collaborators; MCP data filters.'],['Gateway client','0oa-tfgw + secret','TrueFoundry OBO fields.'],['Agent client IDs','0oa-orch, 0oa-ag1, 0oa-ag2, 0oa-ag3','TrueFoundry Subject value; agent runtime.'],['Emergency contact','Okta on-call','Kill switch runbook (Animation 4).']]}
+];
+let i=0,pl=false,tm=[];const red=matchMedia('(prefers-reduced-motion: reduce)').matches;
+__id('pg').innerHTML=S.map((s,k)=>'<span id="p'+k+'">'+(k+1)+'. '+s.n+'</span>').join('');
+S.forEach((s,k)=>__id('p'+k).onclick=()=>{setP(false);show(k)});
+function clr(){tm.forEach(clearTimeout);tm=[]}
+function show(n){clr();i=n;const s=S[i];
+S.forEach((x,k)=>__id('p'+k).className=(k<i?'dn':'')+(k===i?' cu':''));
+__id('tt').textContent=s.t;
+__id('sc').innerHTML=s.sc?'<div class="sc">'+s.sc+'</div>':'';
+const Q=__id('rq'),R2=__id('rt');
+Q.innerHTML=s.q.map(x=>'<div class="rq">'+x+'</div>').join('');
+R2.innerHTML=s.r.map(r=>'<div class="row"><div>'+r[0]+'</div><div class="mono">'+r[1]+'</div><div class="wh">'+r[2]+'</div></div>').join('');
+const els=[...Q.children,...R2.children];
+els.forEach((e,k)=>tm.push(setTimeout(()=>e.classList.add('in'),red?0:k*300)));
+__id('ct').textContent='Step '+(i+1)+' of '+S.length;
+if(pl)tm.push(setTimeout(()=>{if(i<S.length-1)show(i+1);else setP(false)},els.length*300+4000));}
+function setP(v){pl=v;__id('pl').innerHTML=v?'<span aria-hidden="true">❚❚</span> Pause':'<span aria-hidden="true">▶</span> Play';if(!v){clr();__R.querySelectorAll('.rq,.row').forEach(e=>e.classList.add('in'))}}
+__id('pl').onclick=()=>{if(pl)setP(false);else{setP(true);show(i>=S.length-1?0:i)}};
+__id('nx').onclick=()=>{setP(false);show(Math.min(S.length-1,i+1))};
+__id('pv').onclick=()=>{setP(false);show(Math.max(0,i-1))};
+show(0);
+
+})();</script>
+<script>(function(){const __R=document.getElementById('sec-a2');const __id=x=>__R.querySelector('#'+x);
+
+const I='https://corp.okta.com/oauth2/aus123',TU=I+'/v1/token',GW='https://gateway.corp.com';
+const FL={OBO:['var(--bg-success)','var(--text-success)','Hop type: OBO (user carried forward)'],'3LO':['var(--bg-accent)','var(--text-accent)','Hop type: 3LO (each user approves once)'],'2LO':['var(--bg-warning)','var(--text-warning)','Hop type: 2LO (shared team credential)'],SET:['var(--surface-1)','var(--text-secondary)','Setup screen'],DEV:['var(--bg-danger)','var(--text-danger)','Developer checklist (code, not UI)']};
+const SRC={O1:['O','Okta step 1'],O2:['O','Okta step 2'],O3:['O','Okta step 3'],O5:['O','Okta step 5'],O6:['O','Okta step 6'],Y:['Y','Your choice'],P:['P','Platform team'],V:['P','Vendor admin'],OK:['O','From Okta'],TF:['P','From TrueFoundry'],CODE:['C','In your code']};
+function agent(nm,desc,cid,team,scp,colls){return {g:'Agents',n:nm,t:'Register '+nm+' · owner '+team,p:'Agent Registry → Create New Agent → Integrate a Remote Agent',f:'OBO',r:[
+['h','Wizard step 1 · Metadata'],['Agent name',nm,'Y','Policies refer to it as agent:'+nm],['Description',desc,'Y',''],
+['h','Wizard step 2 · Agent identity (1 agent = 1 identity)'],['Identity type','Identity provider-backed','Y',''],['Identity provider','okta-ai-platform','Y',''],['Subject value',cid,'O6','Must equal the cid claim in this agent\'s Okta token'],
+['h','Wizard step 3 · Config'],['Mode','Proxy via Gateway','Y',''],['URL to proxy','https://'+nm+'.internal/a2a','P',''],['Framework','A2A','P',''],['Gateway → agent auth','OAuth2 · Okta · Token Exchange (OBO)','Y',''],['Token URL',TU,'O1',''],['Client ID / secret','0oa-tfgw / ••••','O5',''],['Audience','api://ai-platform','O1',''],['Scope',scp,'O2',''],
+['h','Wizard step 4 · Access control'],['Collaborators',colls,'Y','Remove "everyone"'],['Owner team',team,'Y','All LLM cost of this agent is charged here']]}}
+function selfmcp(nm,sc,scp,ag,users,tools,rule){return {g:'Self-hosted MCPs',n:nm,t:'Register '+nm,p:'MCP Servers → Add MCP Server → Remote',f:'OBO',sc:sc,r:[
+['h','Basics'],['Name',nm,'Y',''],['URL','https://'+nm+'.internal/mcp','P','Reachable only from the gateway'],['Transport','Streamable HTTP','P',''],
+['h','Outbound auth (gateway → MCP)'],['Auth type · Provider · Grant','OAuth2 · Okta · Token Exchange','Y',''],['Token URL',TU,'O1',''],['Client ID / secret','0oa-tfgw / ••••','O5',''],['Audience','api://ai-platform','O1',''],['Scope',scp,'O2',''],
+['h','Access control'],['Collaborators','agent:'+ag+', '+users,'Y',''],['Tools enabled',tools,'Y',''],
+['h','On the MCP server (code)'],['Data rule',rule,'O3','']]}}
+const D=[
+{g:'Setup',n:'Teams',t:'Create owner teams',p:'Settings → Teams → Add Team',f:'SET',r:[['Team','team-1','Y','Owns agent-1, agent-2'],['Team','team-2','Y','Owns agent-3'],['Team','team-platform','Y','Owns orchestrator'],['User groups (synced)','ai-users-team-1, ai-users-team-2','O3','Data access only']]},
+{g:'Setup',n:'Identity provider',t:'Connect Okta',p:'Platform → Identity Providers → Add',f:'SET',r:[['Name','okta-ai-platform','Y',''],['Issuer',I,'O1',''],['JWKS URI',I+'/v1/keys','O1',''],['Audience','api://ai-platform','O1',''],['User claim','sub / email','Y',''],['Agent claim','cid','Y',''],['Group claim','groups','O3','']]},
+{g:'Setup',n:'Models',t:'Model access',p:'AI Gateway → Models → Add Provider Account',f:'SET',r:[['Provider account','openai-main','P',''],['Provider API key','••••••••','P','Only the gateway holds it'],['Collaborators','agent:orchestrator, agent:agent-1, agent:agent-2, agent:agent-3','Y','Agents call models as themselves']]},
+agent('orchestrator','Routes requests','0oa-orch','team-platform','orchestrator.invoke','ai-users-team-1, ai-users-team-2'),
+agent('agent-1','MCP 1 + Atlassian','0oa-ag1','team-1','agent1.invoke','agent:orchestrator, ai-users-team-1, ai-users-team-2'),
+agent('agent-2','MCP 2 + Grafana + MongoDB (team-1)','0oa-ag2','team-1','agent2.invoke','agent:orchestrator, ai-users-team-1, ai-users-team-2'),
+agent('agent-3','MCP 3 + DataHub + MongoDB (team-2)','0oa-ag3','team-2','agent3.invoke','agent:orchestrator, ai-users-team-2'),
+selfmcp('mcp-1','Scenario: self-hosted, all tools, all data.','mcp1.tools','agent-1','ai-users-team-1, ai-users-team-2','All','None'),
+selfmcp('mcp-2','Scenario: self-hosted, all tools, user/team-specific datasets.','mcp2.tools','agent-2','ai-users-team-1, ai-users-team-2','All','Filter rows by sub and groups'),
+selfmcp('mcp-3','Scenario: self-hosted, team-specific tools and datasets.','mcp3.tools','agent-3','ai-users-team-2','Team-2 subset via Virtual MCP Server','Check tool allowed for groups, then filter rows'),
+{g:'SaaS MCPs',n:'Atlassian',t:'Register Atlassian Rovo MCP',p:'MCP Servers → Add MCP Server → Remote',f:'3LO',sc:'Scenario: SaaS, per-user OAuth. Each user approves once; Atlassian applies that user\'s own permissions.',r:[['Name','atlassian','Y',''],['URL','https://mcp.atlassian.com/v1/mcp','V',''],['Auth type · Grant','OAuth2 · Authorization Code','Y',''],['Client ID / secret','From Atlassian','V','Admin must allow your gateway'],['First use','401 + approval link → UI "Connect Atlassian"','Y',''],['Collaborators','agent:agent-1, ai-users-team-1, ai-users-team-2','Y','']]},
+{g:'SaaS MCPs',n:'Grafana',t:'Register Grafana',p:'MCP Servers → Add MCP Server → Remote',f:'3LO',sc:'Scenario: SaaS, team-level access via Grafana teams synced from Okta groups.',r:[['Name','grafana','Y',''],['Auth type · Grant','OAuth2 · Authorization Code','Y',''],['Client ID / secret','From Grafana Cloud','V',''],['Team scoping','Grafana team sync: ai-users-team-1 → Grafana team-1','V',''],['Collaborators','agent:agent-2, ai-users-team-1, ai-users-team-2','Y',''],['Not on Grafana Cloud?','One OSS server per team, API Key (Shared)','P','Team-level only']]},
+{g:'SaaS MCPs',n:'DataHub',t:'Register DataHub',p:'MCP Servers → Add MCP Server → Remote',f:'3LO',sc:'Scenario: SaaS, team and user-level permissions via DataHub policies.',r:[['Name','datahub','Y',''],['Preferred auth','OAuth2 · Authorization Code','Y','Per user'],['Fallback auth','API Key · Individual Credentials (user PAT via Auth Overrides)','Y',''],['Never','One shared token','Y',''],['Collaborators','agent:agent-3, ai-users-team-2','Y','']]},
+{g:'SaaS MCPs',n:'MongoDB',t:'Register MongoDB (one server per team)',p:'MCP Servers → Add MCP Server → Remote (twice)',f:'2LO',sc:'Scenario: team service accounts. Per-team DB users; access per team, not per user.',r:[['Server 1','mongodb-team-1 · team-1 DB user · --readOnly','P',''],['Collaborators','agent:agent-2, ai-users-team-1','Y',''],['Server 2','mongodb-team-2 · team-2 DB user · --readOnly','P',''],['Collaborators','agent:agent-3, ai-users-team-2','Y',''],['Auth type','API Key · Shared','Y','']]},
+{g:'Cost',n:'Budgets',t:'Budgets and rate limits per owner team',p:'AI Gateway → Policies → Budget / Rate Limiting',f:'SET',r:[['team-1-daily','metadata team = team-1 · $300/day · block at 100%','Y',''],['team-2-daily','metadata team = team-2 · $200/day · block at 100%','Y',''],['per-agent-daily','apply per metadata.agent · $150/day','Y',''],['Rate limit','100k tokens/hour per metadata.agent','Y','']]},
+{g:'Developers',n:'Agent developers',t:'What an agent developer needs and must build',p:'Hand this to every team building an agent (agent-1 shown)',f:'DEV',r:[
+['h','Values they receive from Okta (via platform team)'],['OKTA_ISSUER',I,'OK',''],['OKTA_TOKEN_URL',TU,'OK',''],['OKTA_CLIENT_ID','0oa-ag1','OK','One per agent, never shared'],['OKTA_SCOPE','agent.identity','OK',''],['Private key','Generated by the developer; public key sent to Okta','CODE','Kept in the secret store, never in git'],
+['h','Values they receive from TrueFoundry'],['TFY_GATEWAY_URL',GW,'TF',''],['LLM endpoint',GW+'/api/llm/chat/completions','TF','OpenAI-compatible'],['Model names','openai-main/gpt-4o, openai-main/gpt-4o-mini','TF',''],['MCP URLs',GW+'/mcp/<server-name>/server','TF','e.g. mcp-1, atlassian'],['Registered agent name','agent-1','TF','Must match registry'],['Cost tags','{"team":"team-1","agent":"agent-1"}','TF','Fixed per agent'],
+['h','Must implement in code'],['Get agent token','Client credentials + private key JWT; cache, refresh ~1 min before expiry','CODE',''],['Validate inbound token','iss, aud api://ai-platform, scope agent1.invoke','CODE','Reject anything else'],['LLM calls','Authorization: agent token + X-TFY-METADATA','CODE','No user token'],['MCP calls','Authorization: user token received; x-tfy-agent-authorization: agent token','CODE',''],['Error handling','401/403 → stop; 429/budget → back off, max 3 retries; max steps per session','CODE','Prevents runaway loops'],['Hygiene','Never log tokens or put them in prompts; pass session_id through','CODE',''],['Endpoint','Serve A2A at the URL registered in TrueFoundry','CODE','']]},
+{g:'Developers',n:'MCP developers',t:'What a self-hosted MCP developer needs and must build',p:'Hand this to every team building mcp-1, mcp-2 or mcp-3',f:'DEV',r:[
+['h','Values they receive from Okta'],['Issuer',I,'OK',''],['JWKS URI',I+'/v1/keys','OK','Cache keys; refresh on unknown kid'],['Audience','api://ai-platform','OK',''],['Required scope','mcp1.tools / mcp2.tools / mcp3.tools','OK','One per server'],['Groups claim','groups (ai-users-team-*)','OK',''],
+['h','Values they receive from TrueFoundry'],['Registered name','mcp-2','TF',''],['Allowed caller','Gateway only (network policy / IP allow-list)','TF',''],['Tool list','Must match tools enabled / Virtual MCP config','TF',''],
+['h','Must implement in code'],['Transport','Streamable HTTP at /mcp, plus /health','CODE',''],['Token check','Signature, iss, aud, exp, scope on every request','CODE','Deny by default'],['Caller context','user = sub, teams = groups (ai-users-*)','CODE','Never from tool arguments'],['Data rule','Row filter by teams (mcp-2, mcp-3); tool allow-list by team (mcp-3)','CODE',''],['Errors','Structured errors; no data hints in messages','CODE',''],['Logging','Log sub, tool, request id; never the token','CODE','']]},
+{g:'Developers',n:'Test and deploy',t:'Testing and deploying agents and MCPs',p:'Shared by all developers',f:'DEV',r:[
+['h','Environments'],['Okta dev server','ai-platform-dev with its own client IDs','OK','Never reuse prod IDs in dev'],['TrueFoundry dev','Separate dev gateway / workspace','TF',''],['Test users','One test user in each ai-users-team-* group','OK',''],
+['h','Getting a test user token'],['How','Sign in through the dev UI, or Okta test app with PKCE','OK','Paste into local tool for MCP tests'],
+['h','Deploying'],['Secrets','Private keys and client secrets from the secret manager','CODE',''],['Registration','Agent/MCP YAML applied by TF admin (tfy apply) via pull request','TF','Developers don\'t self-register in prod'],['Go-live checks','Token rejected without scope; cross-team data blocked; 403 handled; metadata present on LLM calls','CODE','']]}
+];
+let i=0,pl=false,tm=[],seen=new Set();const red=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const gs=[...new Set(D.map(d=>d.g))];
+__id('sel').innerHTML=gs.map(g=>'<div class="pills"><span class="lb">'+g+'</span>'+D.map((d,k)=>d.g===g?'<button data-k="'+k+'">'+d.n+'</button>':'').join('')+'</div>').join('');
+__R.querySelectorAll('#sel button').forEach(b=>b.onclick=()=>{setP(false);show(+b.dataset.k)});
+function clr(){tm.forEach(clearTimeout);tm=[]}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}
+function show(n){clr();i=n;seen.add(n);const d=D[i];
+__R.querySelectorAll('#sel button').forEach(b=>{const k=+b.dataset.k;b.className=(k===i?'on':(seen.has(k)?'dn':''))});
+__id('ttl').textContent=(i+1)+'. '+d.t;__id('pth').textContent=d.p;
+const f=FL[d.f],b=__id('flow');b.style.background=f[0];b.style.color=f[1];b.textContent=f[2];
+__id('scn').innerHTML=d.sc?'<div class="sc">'+d.sc+'</div>':'';
+const B=__id('body');
+B.innerHTML=d.r.map(r=>r[0]==='h'?'<div class="sec">'+r[1]+'</div>':'<div class="fld"><div><div style="font-size:13px">'+r[0]+'</div><span class="tg '+SRC[r[2]][0]+'">'+SRC[r[2]][1]+'</span></div><div><div class="inp" data-v="'+esc(r[1])+'"></div>'+(r[3]?'<div class="hint">'+r[3]+'</div>':'')+'</div></div>').join('');
+let t=0;[...B.children].forEach(e=>{const at=t;tm.push(setTimeout(()=>{e.classList.add('in');const inp=e.querySelector('.inp');if(inp){const v=inp.dataset.v;if(red){inp.textContent=v;return}let c=0;const st=Math.max(1,Math.ceil(v.length/14));const iv=setInterval(()=>{c+=st;inp.textContent=v.slice(0,c);if(c>=v.length)clearInterval(iv)},22);tm.push(iv)}},red?0:at));t+=e.classList.contains('sec')?150:300});
+__id('ct').textContent='Screen '+(i+1)+' of '+D.length;
+if(pl)tm.push(setTimeout(()=>{if(i<D.length-1)show(i+1);else setP(false)},t+3000));}
+function setP(v){pl=v;__id('pl').innerHTML=v?'<span aria-hidden="true">❚❚</span> Pause':'<span aria-hidden="true">▶</span> Play all'}
+__id('pl').onclick=()=>{if(pl)setP(false);else{setP(true);show(i>=D.length-1?0:i)}};
+__id('nx').onclick=()=>{setP(false);show(Math.min(D.length-1,i+1))};
+__id('pv').onclick=()=>{setP(false);show(Math.max(0,i-1))};
+show(0);
+
+})();</script>
+<script>(function(){const __R=document.getElementById('sec-a3');const __id=x=>__R.querySelector('#'+x);
+
+const P={ui:[105,53],okta:[575,53],gw:[340,153],llm:[585,153],orch:[110,263],ag:[340,263],mcp:[570,263],data:[570,353]};
+const FL={'3LO':['var(--bg-accent)','var(--text-accent)','3LO · user present'],'2LO':['var(--bg-warning)','var(--text-warning)','2LO · machine identity'],'OBO':['var(--bg-success)','var(--text-success)','OBO · token exchange'],'LLM':['var(--bg-warning)','var(--text-warning)','LLM call · 2LO agent token only · gateway uses its provider key'],'TEAM':['var(--bg-warning)','var(--text-warning)','2LO · shared team credential'],'RET':['var(--surface-1)','var(--text-secondary)','Response']};
+const SC={
+m3:{d:'Self-hosted MCP 3 · team-specific tools and data · agent-3 (owner team-2)',ag:'agent-3',cid:'0oa-ag3',team:'team-2',scp:'agent3.invoke',mcp:'MCP 3',data:'Team-2 rows',hop:{b:'OBO',p:['ag','gw','okta','gw','mcp','data','mcp'],c:'Agent-3 calls MCP 3. The gateway swaps Priya\'s token for one with scope mcp3.tools. MCP 3 checks the scope and returns only rows for ai-users-team-2.',u:{to:'MCP 3',sub:'priya@corp.com',scp:'mcp3.tools',groups:'ai-users-team-2'}}},
+at:{d:'Atlassian · SaaS, per-user OAuth · agent-1 (owner team-1)',ag:'agent-1',cid:'0oa-ag1',team:'team-1',scp:'agent1.invoke',mcp:'Atlassian MCP',data:'Jira / Confluence',hop:{b:'3LO',p:['ag','gw','mcp','data','mcp'],c:'Agent-1 calls Atlassian. Priya approved Atlassian once earlier in the UI, so the gateway attaches her stored Atlassian token. Atlassian shows only what Priya can see.',u:{to:'Atlassian',token:'Priya\'s Atlassian OAuth token',from:'gateway token vault',perms:'Priya\'s own Jira/Confluence access'}}},
+mg:{d:'MongoDB · team service account · agent-3 uses mongodb-team-2 (owner team-2)',ag:'agent-3',cid:'0oa-ag3',team:'team-2',scp:'agent3.invoke',mcp:'mongodb-team-2',data:'Team-2 databases',hop:{b:'TEAM',p:['ag','gw','mcp','data','mcp'],c:'Agent-3 calls mongodb-team-2. The gateway checks Priya and agent-3 are collaborators, then sends the shared key. MongoDB connects as the team-2 DB user and sees only team-2 databases. The gateway trace records Priya.',u:{to:'mongodb-team-2',auth:'shared API key (team-2)',db_user:'svc-team-2 (read-only)',user_level:'not enforced by MongoDB'}}},
+gr:{d:'Grafana Cloud · SaaS, team-level via Grafana RBAC · agent-2 (owner team-1)',ag:'agent-2',cid:'0oa-ag2',team:'team-1',scp:'agent2.invoke',mcp:'Grafana MCP',data:'Team folders',hop:{b:'3LO',p:['ag','gw','mcp','data','mcp'],c:'Agent-2 calls Grafana with Priya\'s stored Grafana token. Grafana team sync put Priya in Grafana team-2, so she sees only team-2 folders and datasources.',u:{to:'Grafana',token:'Priya\'s Grafana OAuth token',scope:'Grafana RBAC → team-2 folders'}}}
+};
+const U0={sub:'priya@corp.com',cid:'0oa-ui',scp:'orchestrator.invoke',groups:'ai-users-team-2'};
+let cur='m3',S=[],i=0,playing=false,run=0,timer=null;const red=matchMedia('(prefers-reduced-motion: reduce)').matches;const dot=__id('dot');
+function build(){const s=SC[cur];const AO={sub:'0oa-orch',cid:'0oa-orch',scp:'agent.identity'},AA={sub:s.cid,cid:s.cid,scp:'agent.identity'};
+const L1={w:'orchestrator',t:'team-platform',i:1200,o:150,c:0.005},L2={w:s.ag,t:s.team,i:2800,o:400,c:0.011},L3={w:s.ag,t:s.team,i:4100,o:650,c:0.017};
+const UG={...U0,cid:'0oa-tfgw'};
+__id('t-ag').textContent=s.ag;__id('t-mcp').textContent=s.mcp;__id('t-data').textContent=s.data;__id('scd').textContent=s.d;
+S=[
+{p:['ui','okta','ui'],b:'3LO',c:'Priya signs in through the Okta OIDC app.',u:U0,uc:Object.keys(U0),a:null,L:[]},
+{p:[],h:['orch','ag','okta'],b:'2LO',c:'Each agent fetches its own token from Okta (client credentials). This token says which agent is calling, never which user.',u:null,a:AA,ac:['sub','cid','scp'],L:[]},
+{p:['ui','gw','okta','gw','orch'],b:'OBO',c:'The gateway checks Priya may use the orchestrator, swaps her token, and forwards it.',u:UG,uc:['cid'],a:null,L:[]},
+{p:['orch','gw','llm','gw','orch'],b:'LLM',c:'The orchestrator asks the model which agent to use. It sends only its own token, so the cost goes to team-platform.',u:{to:'LLM gateway',auth:'orchestrator token (no user token)',metadata:'{"team":"team-platform","agent":"orchestrator"}'},uc:['auth'],a:AO,ac:[],L:[L1],nw:1},
+{p:['orch','gw','okta','gw','ag'],b:'OBO',c:'The orchestrator calls '+s.ag+'. The gateway checks the allow-lists and swaps Priya\'s token for scope '+s.scp+'.',u:{...UG,scp:s.scp},uc:['scp'],a:AO,ac:[],L:[L1]},
+{p:['ag','gw','llm','gw','ag'],b:'LLM',c:s.ag+' plans its tool call. Its own token only, so the cost goes to '+s.team+', even though Priya is in team-2 users.',u:{to:'LLM gateway',auth:s.ag+' token (no user token)',metadata:'{"team":"'+s.team+'","agent":"'+s.ag+'"}'},uc:['metadata'],a:AA,ac:[],L:[L1,L2],nw:1},
+{p:s.hop.p,b:s.hop.b,c:s.hop.c,u:s.hop.u,uc:Object.keys(s.hop.u),a:AA,ac:[],L:[L1,L2]},
+{p:['mcp','gw','ag','gw','llm','gw','ag'],b:'LLM',c:s.ag+' sends the tool result to the model to write the answer. Charged to '+s.team+' again.',u:{to:'LLM gateway',auth:s.ag+' token',metadata:'{"team":"'+s.team+'","agent":"'+s.ag+'"}'},uc:[],a:AA,ac:[],L:[L1,L2,L3],nw:1},
+{p:['ag','gw','orch','gw','ui'],b:'RET',c:'The answer returns to Priya. The cost appears under team-platform and '+s.team+', not under Priya\'s team.',u:null,a:null,L:[L1,L2,L3]}
+];}
+function ek(a,b){return __id('e-'+a+'-'+b)||__id('e-'+b+'-'+a)}
+function card(t,c){if(!t)return '<span style="color:var(--text-muted)">Nothing sent on this step</span>';return Object.entries(t).map(([k,v])=>'<div><span style="color:var(--text-secondary)">'+k+':</span> <span class="'+(c&&c.includes(k)?'chg':'')+'">'+v+'</span></div>').join('')}
+function ledger(L,nw){if(!L.length)return '<span style="color:var(--text-muted)">No LLM calls yet</span>';const T={};let h='';L.forEach((x,k)=>{T[x.t]=(T[x.t]||0)+x.c;h+='<div class="'+(nw&&k===L.length-1?'chg':'')+'">'+x.w+' → '+x.t+': '+(x.i+x.o).toLocaleString()+' tok · $'+x.c.toFixed(3)+'</div>'});h+='<div style="border-top:0.5px solid var(--border);margin-top:4px;padding-top:4px">'+Object.entries(T).map(([t,c])=>'<div style="font-weight:500">'+t+': $'+c.toFixed(3)+'</div>').join('')+'</div>';return h}
+function anim(a,b,ms,id){return new Promise(r=>{if(red){dot.setAttribute('cx',b[0]);dot.setAttribute('cy',b[1]);r();return}const t0=performance.now();function f(t){if(id!==run){r();return}const k=Math.min(1,(t-t0)/ms);dot.setAttribute('cx',a[0]+(b[0]-a[0])*k);dot.setAttribute('cy',a[1]+(b[1]-a[1])*k);k<1?requestAnimationFrame(f):r()}requestAnimationFrame(f)})}
+async function show(n){run++;const id=run;clearTimeout(timer);i=n;const s=S[i];
+__R.querySelectorAll('.e').forEach(e=>e.classList.remove('on'));
+const act=s.p.length?s.p:s.h;__R.querySelectorAll('.nd').forEach(e=>e.classList.add('dim'));act.forEach(x=>__id('n-'+x).classList.remove('dim'));
+for(let k=0;k<s.p.length-1;k++){const e=ek(s.p[k],s.p[k+1]);if(e)e.classList.add('on')}
+const f=FL[s.b],b=__id('bdg');b.style.background=f[0];b.style.color=f[1];b.textContent=f[2];
+__id('cnt').textContent='Step '+(i+1)+' of '+S.length;__id('cap').textContent=s.c;
+__id('ut').innerHTML=card(s.u,s.uc);__id('at').innerHTML=card(s.a,s.ac);__id('lg').innerHTML=ledger(s.L,s.nw);
+if(s.p.length){dot.setAttribute('opacity','1');dot.setAttribute('cx',P[s.p[0]][0]);dot.setAttribute('cy',P[s.p[0]][1]);for(let k=0;k<s.p.length-1;k++){if(id!==run)return;await anim(P[s.p[k]],P[s.p[k+1]],580,id)}}else dot.setAttribute('opacity','0');
+if(id!==run)return;if(playing){if(i<S.length-1)timer=setTimeout(()=>show(i+1),2600);else setPlay(false)}}
+function setPlay(v){playing=v;__id('play').innerHTML=v?'<span aria-hidden="true">❚❚</span> Pause':'<span aria-hidden="true">▶</span> Play'}
+function pick(k){cur=k;__R.querySelectorAll('.sb button').forEach(b=>b.classList.toggle('on',b.dataset.s===k));setPlay(false);build();show(0)}
+__R.querySelectorAll('.sb button').forEach(b=>b.onclick=()=>pick(b.dataset.s));
+__id('play').onclick=()=>{if(playing){setPlay(false);clearTimeout(timer)}else{setPlay(true);show(i>=S.length-1?0:i)}};
+__id('next').onclick=()=>{setPlay(false);show(Math.min(S.length-1,i+1))};
+__id('prev').onclick=()=>{setPlay(false);show(Math.max(0,i-1))};
+pick('m3');
+
+})();</script>
+<script>(function(){const __R=document.getElementById('sec-a4');const __id=x=>__R.querySelector('#'+x);
+
+const LN=[['Okta','Identity'],['Network','Egress'],['Gateway','Access'],['Gateway','Policy'],['Agent','Runtime'],['Tools','MCP'],['SaaS /','Data']];
+const LV=['L1 Throttle','L2 Contain','L3 Suspend agent','L4 Isolate team','L5 Global stop'];
+const TY={orig:['c-pink','Origin','#D4537E'],det:['c-amber','Detected','#EF9F27'],auto:['c-teal','Automatic control','#1D9E75'],man:['c-red','Manual action','#E24B4A'],note:['c-blue','Notified','#378ADD'],rec:['c-green','Recovered','#639922']};
+const LNAME=['Okta','Network','Gateway access','Gateway policy','Agent runtime','Tools (MCP)','SaaS / data','People'];
+const BX=j=>42+j*86, CEN=j=>j<7?[BX(j)+40,146]:[340,166];
+const SC={
+inj:{d:'A poisoned DataHub description tells agent-3 (team-2) to dump team-2 MongoDB data to an outside URL.',ev:[
+[6,'T+0s','orig','Poisoned','agent-3 reads a poisoned DataHub description during a normal request.','DataHub content',''],
+[3,'T+1s','det','Guardrail hit','Detected first: the MCP pre-tool guardrail flags a bulk export to an external URL.','Gateway policy, automatic',''],
+[3,'T+1s','auto','Blocked','The tool call is blocked before it reaches mongodb-team-2.','Gateway, automatic',''],
+[4,'T+1s','auto','Task ended','agent-3 gets the policy error, does not retry variations, and tells the user the action was blocked.','agent-3 code',''],
+[1,'T+1s','auto','Egress deny','Backstop: agent pods can only reach the gateway, so the outside URL is unreachable anyway.','Network policy',''],
+[7,'T+2s','note','SecOps','TF admin and SecOps alerted with the trace, user, agent and DataHub source.','Alerting','Remove export tools from agent-3 and quarantine the DataHub entry.'],
+[5,'T+10m','man','Tools cut','Bulk-export tools removed from agent-3\'s Virtual MCP Server.','TF admin',''],
+[6,'T+15m','man','Cleaned','DataHub admin removes the poisoned description and scans for others.','DataHub admin',''],
+[2,'T+30m','man','If repeat: 403','Only if more attempts are found: agent-3 disabled in the gateway.','TF admin','']],lv:[0,1,1,1,1,1,1,1,2],
+sig:'Also visible in: agent logs (tool not in plan), MongoDB audit (large read attempt), network logs (denied egress).'},
+key:{d:'agent-3\'s Okta private key is pushed to a public Git repository.',ev:[
+[4,'T+0s','orig','Key exposed','agent-3\'s private key is committed to a public repository.','Developer mistake',''],
+[7,'T+2m','det','Scanner','Detected first: the secret scanner flags the 0oa-ag3 key and alerts SecOps, TF admin and the Okta team.','Secret scanner','Suspend agent-3 at Okta and in the gateway now.'],
+[0,'T+5m','man','App off','Okta team deactivates app 0oa-ag3. No new agent-3 tokens can be issued.','Okta team',''],
+[2,'T+5m','man','cid → 403','TF admin disables agent-3 in the registry. Tokens already issued (valid up to 10 min) are refused at once.','TF admin',''],
+[4,'T+5m','auto','Offline','The real agent-3 also gets 403; the orchestrator tells users it is offline.','agent-3 / orchestrator',''],
+[3,'T+10m','man','Trace review','Calls with cid 0oa-ag3 reviewed for the last 30 days.','TF admin + SecOps',''],
+[4,'T+40m','rec','Key rotated','New key pair deployed; Okta app and gateway registration re-enabled after review.','Agent team, Okta, TF admin','']],lv:[2,2,2,2,2,2,2],
+sig:'Also visible in: Okta System Log (token requests from unknown IPs), gateway traces (calls from unexpected sources).'},
+loop:{d:'agent-2 (team-1) keeps re-calling the model after a tool error; tokens climb fast.',ev:[
+[4,'T+0s','orig','Looping','agent-2 feeds the same tool error back to the model again and again.','agent-2',''],
+[3,'T+30s','det','Spike','Detected first: agent-2\'s tokens per hour cross the rate limit.','Gateway policy, automatic',''],
+[3,'T+30s','auto','429 sent','Gateway throttles agent-2 only; agent-1 keeps working.','Gateway, automatic',''],
+[4,'T+31s','auto','Stopped','agent-2\'s circuit breaker stops after 3 retries and ends the session.','agent-2 code',''],
+[7,'T+31s','note','Alerted','TF admin and team-1 lead get a Slack alert with the session ID.','Alerting','Open the trace and fix the failing tool call or prompt.'],
+[3,'T+20m','auto','Budget cap','The loop repeats across sessions; team-1 hits 100% of budget and all team-1 LLM calls are blocked.','Gateway, automatic',''],
+[2,'T+25m','man','agent-2 403','TF admin removes agent-2 from model access; team-1 budget restored for agent-1.','TF admin',''],
+[2,'T+2h','rec','Restored','Fix deployed; agent-2 re-added.','TF admin + team-1','']],lv:[0,0,0,0,0,1,2,2],
+sig:'Also visible in: request traces (one agent dominating calls), budget alerts at 75% and 90%.'},
+saas:{d:'Atlassian reports a security incident affecting OAuth tokens.',ev:[
+[6,'T+0s','orig','Vendor hit','Atlassian suffers a security incident.','Atlassian',''],
+[7,'T+1h','det','Bulletin','Detected first: the vendor bulletin reaches SecOps and the TF admin.','SecOps','Disable the atlassian MCP server now; other MCPs keep running.'],
+[2,'T+1h','man','MCP off','TF admin disables the atlassian MCP server and purges stored user tokens.','TF admin',''],
+[5,'T+1h','auto','Tools gone','Atlassian tools disappear from agent-1\'s tool list.','Gateway',''],
+[4,'T+1h','auto','Degraded','agent-1 answers with mcp-1 only and tells users Atlassian is unavailable.','agent-1 code',''],
+[6,'T+1h20m','man','Revoked','Atlassian admin revokes all grants issued to the gateway client.','Atlassian admin',''],
+[0,'T+1h20m','man','XAA off','If XAA is used: Okta team removes the gateway → Atlassian connection.','Okta team',''],
+[2,'T+2d','rec','Re-enabled','Vendor all-clear; TF admin re-enables; users reconnect once.','TF admin','']],lv:[0,1,1,1,1,1,1,1],
+sig:'Also visible in: Atlassian audit log, errors on atlassian MCP traces.'},
+team:{d:'Audit finding: all team-2 AI activity must stop now; team-1 keeps running.',ev:[
+[7,'T+0s','det','Order','Detected first: compliance orders an immediate team-2 stop.','Compliance','Isolate team-2 without touching team-1.'],
+[3,'T+2m','man','$0 budget','team-2 budget set to $0 in block mode.','TF admin',''],
+[2,'T+3m','man','Disabled','agent-3, mcp-3, mongodb-team-2 and datahub access disabled.','TF admin',''],
+[4,'T+3m','auto','Offline','agent-3 gets 403; the orchestrator stops routing to it.','agent-3 / orchestrator',''],
+[5,'T+3m','auto','No traffic','mcp-3 and mongodb-team-2 receive no calls.','Gateway',''],
+[6,'T+15m','man','DB locked','svc-team-2 MongoDB user locked.','DB team',''],
+[0,'T+15m','man','UI removed','ai-users-team-2 removed from the UI app.','Okta team','']],lv:[3,3,3,3,3,3,3],
+sig:'Verify with: zero team-2 calls in traces, team-2 spend flat, sign-in denials for team-2 users.'},
+all:{d:'Major incident: all AI agents must stop immediately.',ev:[
+[7,'T+0s','det','Declared','Detected first: the incident commander declares a global stop.','Incident commander','Run the global stop runbook in this order.'],
+[2,'T+2m','man','All 403','All agents removed from model access; every MCP server disabled.','TF admin',''],
+[3,'T+2m','man','$0 global','Global budget set to $0 as a backstop.','TF admin',''],
+[4,'T+3m','auto','Scaled 0','Agents get 403, show a maintenance message, then scale to zero.','Platform on-call',''],
+[5,'T+3m','auto','Idle','MCP servers receive no traffic.','Gateway',''],
+[0,'T+5m','man','Apps off','tf-gateway and all agent apps deactivated in Okta.','Okta team',''],
+[1,'T+10m','man','Egress deny','Egress from the agent namespace denied.','Network team',''],
+[6,'T+30m','man','Locked','If compromise is suspected: vendor grants revoked, DB users locked.','Vendor / DB admins','']],lv:[4,4,4,4,4,4,4,4],
+sig:'Verify with: 403 for every agent, spend at zero, pods at zero.'}
+};
+let cur='inj',i=-1,pl=false,tm=null,dp=null,raf=null;const red=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function lanesSvg(){let h='';for(let j=0;j<7;j++){const x=BX(j);h+='<g id="L'+j+'" class="lane c-gray"><rect x="'+x+'" y="50" width="80" height="84" rx="8" stroke-width="0.5"/><text class="th" x="'+(x+40)+'" y="70" text-anchor="middle" dominant-baseline="central">'+LN[j][0]+'</text><text class="ts" x="'+(x+40)+'" y="88" text-anchor="middle" dominant-baseline="central">'+LN[j][1]+'</text><text id="S'+j+'" class="ts" x="'+(x+40)+'" y="116" text-anchor="middle" dominant-baseline="central" style="font-weight:500">—</text></g><g id="K'+j+'" class="c-gray" style="opacity:0"><circle cx="'+(x+78)+'" cy="52" r="9" stroke-width="0.5"/><text id="KT'+j+'" class="ts" x="'+(x+78)+'" y="52" text-anchor="middle" dominant-baseline="central">0</text></g>'}
+h+='<g id="L7" class="lane c-gray"><rect x="42" y="172" width="596" height="52" rx="8" stroke-width="0.5"/><text class="th" x="60" y="190" dominant-baseline="central">People</text><text class="ts" x="60" y="208" dominant-baseline="central">SecOps · TF admin · team leads · Okta, DB and vendor admins</text><text id="S7" class="ts" x="620" y="198" text-anchor="end" dominant-baseline="central" style="font-weight:500">—</text></g><g id="K7" class="c-gray" style="opacity:0"><circle cx="636" cy="174" r="9" stroke-width="0.5"/><text id="KT7" class="ts" x="636" y="174" text-anchor="middle" dominant-baseline="central">0</text></g>';
+__id('lanes').innerHTML=h}
+function flag(id,lane){const g=__id(id);if(lane<0){g.style.opacity=0;return}const x=lane<7?BX(lane)-2:42,y=lane<7?24:148;g.setAttribute('transform','translate('+x+','+y+')');g.style.opacity=1}
+function moveDot(to){const d=__id('dot');cancelAnimationFrame(raf);if(!to){d.setAttribute('opacity',0);dp=null;return}d.setAttribute('opacity',1);const fr=dp||to;dp=to;if(red||fr===to){d.setAttribute('cx',to[0]);d.setAttribute('cy',to[1]);return}const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/600),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;d.setAttribute('cx',fr[0]+(to[0]-fr[0])*e);d.setAttribute('cy',fr[1]+(to[1]-fr[1])*e);if(k<1)raf=requestAnimationFrame(f)};raf=requestAnimationFrame(f)}
+function render(){const s=SC[cur],E=s.ev,last=E.length-1;
+for(let j=0;j<8;j++){const evs=E.filter((e,k)=>e[0]===j&&k<=i);const g=__id('L'+j);const st=__id('S'+j);
+if(evs.length){const e=evs[evs.length-1];g.setAttribute('class','lane '+TY[e[2]][0]);st.textContent=e[3];g.style.opacity=1}
+else{g.setAttribute('class','lane c-gray');const inv=E.some(e=>e[0]===j);st.textContent=i>=last&&!inv?'Not involved':(inv?'Pending':'—');g.style.opacity=i>=last&&!inv?.55:1}
+const K=__id('K'+j),acts=evs.filter(e=>e[2]!=='orig'&&e[2]!=='det').length;K.style.opacity=acts?1:0;__id('KT'+j).textContent=acts;K.setAttribute('class',evs.length?TY[evs[evs.length-1][2]][0]:'c-gray')}
+const oi=E.findIndex(e=>e[2]==='orig'),di=E.findIndex(e=>e[2]==='det');
+flag('og',oi>=0&&oi<=i?E[oi][0]:-1);flag('fd',di>=0&&di<=i?E[di][0]:-1);
+moveDot(i>=0?CEN(E[i][0]):null);
+const mx=i>=0?Math.max(...s.lv.slice(0,i+1)):-1;
+__id('lv').innerHTML=LV.map((x,j)=>'<div class="'+(j<mx?'on':(j===mx?'max':''))+'">'+x+'</div>').join('');
+__id('tl').innerHTML=E.map((e,k)=>'<button data-k="'+k+'" class="'+(k<i?'past':'')+(k===i?' cur':'')+'"><i class="d" style="background:'+TY[e[2]][2]+'"></i>'+e[1]+' · '+LNAME[e[0]]+'</button>').join('');
+__R.querySelectorAll('#tl button').forEach(b=>b.onclick=()=>{setP(false);i=+b.dataset.k;render()});
+const C=__id('card');
+if(i<0)C.innerHTML='<b style="font-weight:500">Incident:</b> '+s.d+'<div style="color:var(--text-muted);margin-top:4px">Press Play to watch the response.</div>';
+else{const e=E[i];C.innerHTML='<div style="font-weight:500;margin-bottom:6px">Step '+(i+1)+' of '+E.length+' · '+e[1]+' · '+TY[e[2]][1]+'</div>'+[['Layer',LNAME[e[0]]],['What happens',e[4]],['Who acts',e[5]]].map(r=>'<div class="kv"><span style="color:var(--text-secondary)">'+r[0]+'</span><span>'+r[1]+'</span></div>').join('')+(e[6]?'<div class="kv"><span style="color:var(--text-secondary)">Recommended</span><span class="rec">'+e[6]+'</span></div>':'')+(i===last?'<div style="margin-top:8px;padding-top:8px;border-top:0.5px solid var(--border)"><div style="font-weight:500">Summary</div><div>First detected at: '+(di>=0?LNAME[E[di][0]]+' ('+E[di][1]+')':'—')+'</div><div>Severity reached: '+LV[mx]+'</div><div>Layers involved: '+new Set(E.map(x=>x[0])).size+' of 8</div><div style="color:var(--text-secondary)">'+s.sig+'</div></div>':'')}
+__id('ct').textContent=i<0?'':'Step '+(i+1)+' of '+E.length;
+if(pl){clearTimeout(tm);tm=setTimeout(()=>{if(i<last){i++;render()}else setP(false)},2400)}}
+function setP(v){pl=v;clearTimeout(tm);__id('pl').innerHTML=v?'<span aria-hidden="true">❚❚</span> Pause':'<span aria-hidden="true">▶</span> Play'}
+function pick(k,auto){cur=k;dp=null;__R.querySelectorAll('.sb button').forEach(b=>b.classList.toggle('on',b.dataset.s===k));__id('desc').innerHTML='<b style="font-weight:500;color:var(--text-primary)">Incident:</b> '+SC[k].d;
+if(!auto||red){setP(false);i=SC[k].ev.length-1;render()}else{i=0;setP(true);render()}}
+lanesSvg();
+__R.querySelectorAll('.sb button').forEach(b=>b.onclick=()=>pick(b.dataset.s,true));
+__id('pl').onclick=()=>{if(pl)setP(false);else{if(i>=SC[cur].ev.length-1)i=-1;setP(true);i++;render()}};
+__id('nx').onclick=()=>{setP(false);i=Math.min(SC[cur].ev.length-1,i+1);render()};
+__id('pv').onclick=()=>{setP(false);i=Math.max(0,i-1);render()};
+__id('all').onclick=()=>{setP(false);i=SC[cur].ev.length-1;render()};
+__id('rs').onclick=()=>{dp=null;i=0;setP(true);render()};
+pick('inj',true);
+
+})();</script>
+<script>(function(){const __R=document.getElementById('sec-a5');const __id=x=>__R.querySelector('#'+x);
+
+const P={ui:[105,53],okta:[575,53],gw:[340,153],ag:[110,263],as:[345,263],mcp:[570,263]};
+const POLY={'ui-as':[[105,53],[105,205],[250,205],[345,263]]};
+const B={setup:['var(--surface-1)','var(--text-secondary)','One-time admin setup'],sso:['var(--bg-accent)','var(--text-accent)','SSO login'],idjag:['var(--bg-success)','var(--text-success)','ID-JAG: token exchange at Okta'],jwt:['var(--bg-success)','var(--text-success)','JWT bearer grant at vendor'],call:['var(--bg-success)','var(--text-success)','Tool call'],cons:['var(--bg-accent)','var(--text-accent)','3LO consent'],shared:['var(--bg-warning)','var(--text-warning)','2LO shared key'],rev:['var(--bg-danger)','var(--text-danger)','Revocation']};
+const M={
+x:{c:[['Who decides access','IT admin in Okta policy, then Atlassian\'s own policy'],['Consent prompts','None for users'],['Vendor sees','Priya'],['Stored in gateway','Nothing long-lived; short tokens re-minted'],['Revocation','One place: Okta connection or user'],['Needs','Vendor supports EMA / ID-JAG, Okta XAA enabled, gateway ID-JAG grant']],
+s:[
+{p:['ui','okta','ui'],b:'sso',c:'Priya signs in with Okta SSO as usual.',kh:'Priya holds',k:{id_token:'iss okta · sub priya@corp.com'}},
+{p:[],h:['okta','as'],b:'setup',c:'One time: the Okta admin creates a managed connection "TrueFoundry gateway → Atlassian" for ai-users-team-*. Atlassian trusts your Okta org as an issuer.',kh:'Configured once',k:{okta_policy:'gateway → Atlassian allowed for ai-users-team-*',atlassian_trust:'issuer https://corp.okta.com'}},
+{p:['ag','gw'],b:'call',c:'agent-1 asks the gateway to call an Atlassian tool for Priya.',kh:'agent-1 sends',k:{Authorization:'Priya\'s OBO token',agent:'agent-1 token'}},
+{p:['gw','okta','gw'],b:'idjag',c:'The gateway asks Okta: "may this user reach Atlassian through me?" Okta checks its policy and returns a short-lived ID-JAG addressed only to Atlassian.',kh:'ID-JAG (signed by Okta)',k:{typ:'oauth-id-jag+jwt',iss:'https://corp.okta.com',sub:'priya@corp.com',aud:'Atlassian authorization server',client_id:'TrueFoundry gateway',exp:'~5 minutes'}},
+{p:['gw','as','gw'],b:'jwt',c:'The gateway hands the ID-JAG to Atlassian\'s authorization server. Atlassian verifies Okta\'s signature, maps Priya, applies its own rules, and returns a short-lived access token. No consent screen.',kh:'Atlassian returns',k:{access_token:'short-lived, for Atlassian MCP',user:'Priya',scope:'per Atlassian policy'}},
+{p:['gw','mcp','gw','ag'],b:'call',c:'The gateway calls Atlassian MCP with that token. Atlassian shows only what Priya can see.',kh:'Atlassian MCP receives',k:{Authorization:'Bearer <Atlassian access token for Priya>'}},
+{p:[],h:['okta'],b:'rev',c:'Priya leaves, or the admin removes the connection in Okta. The next ID-JAG request is refused, so access stops within minutes. Nothing to purge at the vendor.',kh:'After revocation',k:{next_id_jag:'denied by Okta',vendor_cleanup:'none needed'}}]},
+o:{c:[['Who decides access','Each user, by clicking Approve'],['Consent prompts','Once per user per vendor'],['Vendor sees','Priya'],['Stored in gateway','Priya\'s refresh token, per vendor'],['Revocation','Vendor admin + gateway purge; Okta alone is not enough'],['Needs','Vendor OAuth client that allows your gateway']],
+s:[
+{p:['ui','okta','ui'],b:'sso',c:'Priya signs in with Okta SSO.',kh:'Priya holds',k:{id_token:'sub priya@corp.com'}},
+{p:['ag','gw','ui'],b:'call',c:'agent-1 calls Atlassian for Priya. The gateway has no Atlassian token for her yet, so the UI shows "Connect Atlassian".',kh:'Gateway replies',k:{status:'401',auth_url:'Atlassian consent link'}},
+{p:['ui','as'],b:'cons',c:'Priya opens Atlassian\'s consent screen in her browser and clicks Approve.',kh:'Priya approves',k:{consent:'Jira and Confluence scopes'}},
+{p:['as','gw'],b:'cons',c:'Atlassian returns a code; the gateway swaps it for access and refresh tokens and stores them for Priya.',kh:'Gateway vault stores',k:{user:'Priya',refresh_token:'long-lived',access_token:'short-lived'}},
+{p:['gw','mcp','gw','ag'],b:'call',c:'From now on the gateway attaches Priya\'s stored Atlassian token on her calls.',kh:'Atlassian MCP receives',k:{Authorization:'Bearer <Priya\'s Atlassian token>'}},
+{p:[],h:['gw','as'],b:'rev',c:'Priya leaves. Disabling her in Okta stops new sign-ins, but her stored refresh token may still work until purged in the gateway and revoked at Atlassian.',kh:'After revocation',k:{okta:'user disabled',gateway:'purge Priya\'s token',atlassian:'revoke grant'}}]},
+s:{c:[['Who decides access','Whoever holds the shared key'],['Consent prompts','None'],['Vendor sees','One service account'],['Stored in gateway','One shared secret'],['Revocation','Rotate the key; breaks everyone'],['Needs','Vendor service account or API token']],
+s:[
+{p:[],h:['gw'],b:'setup',c:'One time: an admin stores a single Atlassian service-account token in the gateway.',kh:'Gateway stores',k:{secret:'svc-ai token (shared)'}},
+{p:['ag','gw','mcp','gw','ag'],b:'shared',c:'Every call, for every user, goes out with the same token. Atlassian cannot tell Priya from anyone else; only gateway logs know.',kh:'Atlassian MCP receives',k:{Authorization:'Bearer <svc-ai token>',user_seen:'svc-ai'}},
+{p:[],h:['gw','mcp'],b:'rev',c:'To cut access you rotate the key, which stops everyone at once. There is no per-user revoke.',kh:'After revocation',k:{action:'rotate svc-ai token',impact:'all users'}}]}
+};
+let mode='x',i=0,playing=false,run=0,timer=null;const red=matchMedia('(prefers-reduced-motion: reduce)').matches;const dot=__id('dot');
+function pts(a,b){const k1=a+'-'+b,k2=b+'-'+a;if(POLY[k1])return POLY[k1];if(POLY[k2])return [...POLY[k2]].reverse();return [P[a],P[b]]}
+function ek(a,b){return __id('e-'+a+'-'+b)||__id('e-'+b+'-'+a)}
+function seg(a,b,ms,id){return new Promise(r=>{if(red){dot.setAttribute('cx',b[0]);dot.setAttribute('cy',b[1]);r();return}const t0=performance.now();function f(t){if(id!==run){r();return}const k=Math.min(1,(t-t0)/ms);dot.setAttribute('cx',a[0]+(b[0]-a[0])*k);dot.setAttribute('cy',a[1]+(b[1]-a[1])*k);k<1?requestAnimationFrame(f):r()}requestAnimationFrame(f)})}
+async function show(n){run++;const id=run;clearTimeout(timer);i=n;const S=M[mode].s,s=S[i];
+__R.querySelectorAll('.e').forEach(e=>e.classList.remove('on'));const act=s.p.length?s.p:s.h;
+__R.querySelectorAll('.nd').forEach(e=>e.classList.add('dim'));act.forEach(x=>__id('n-'+x).classList.remove('dim'));
+for(let k=0;k<s.p.length-1;k++){const e=ek(s.p[k],s.p[k+1]);if(e)e.classList.add('on')}
+const b=B[s.b],bd=__id('bdg');bd.style.background=b[0];bd.style.color=b[1];bd.textContent=b[2];
+__id('cnt').textContent='Step '+(i+1)+' of '+S.length;__id('cap').textContent=s.c;
+__id('kh').textContent=s.kh;__id('kt').innerHTML=Object.entries(s.k).map(([k,v])=>'<div><span style="color:var(--text-secondary)">'+k+':</span> '+v.replace(/</g,'&lt;')+'</div>').join('');
+if(s.p.length){dot.setAttribute('opacity','1');dot.setAttribute('cx',P[s.p[0]][0]);dot.setAttribute('cy',P[s.p[0]][1]);for(let k=0;k<s.p.length-1;k++){const ps=pts(s.p[k],s.p[k+1]);for(let j=0;j<ps.length-1;j++){if(id!==run)return;await seg(ps[j],ps[j+1],ps.length>2?300:580,id)}}}else dot.setAttribute('opacity','0');
+if(id!==run)return;if(playing){if(i<S.length-1)timer=setTimeout(()=>show(i+1),2800);else setPlay(false)}}
+function setPlay(v){playing=v;__id('play').innerHTML=v?'<span aria-hidden="true">❚❚</span> Pause':'<span aria-hidden="true">▶</span> Play'}
+function pick(m){mode=m;setPlay(false);__R.querySelectorAll('.sb button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));__id('cmp').innerHTML=M[m].c.map(c=>'<div><b>'+c[0]+'</b>'+c[1]+'</div>').join('');show(0)}
+__R.querySelectorAll('.sb button').forEach(b=>b.onclick=()=>pick(b.dataset.m));
+__id('play').onclick=()=>{if(playing){setPlay(false);clearTimeout(timer)}else{setPlay(true);show(i>=M[mode].s.length-1?0:i)}};
+__id('next').onclick=()=>{setPlay(false);show(Math.min(M[mode].s.length-1,i+1))};
+__id('prev').onclick=()=>{setPlay(false);show(Math.max(0,i-1))};
+pick('x');
+
+})();</script>
+</body>
+</html>
